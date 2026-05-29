@@ -1,11 +1,102 @@
-<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta http-equiv="Cache-Control" content="no-store"><meta http-equiv="Pragma" content="no-cache"><title>Rowerowe Trasy Adama V6.3</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="ikona.svg"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="styl-v63.css?v=63"></head><body><div id="map"></div><main class="card"><h1>🚴‍♂️ Rowerowe Trasy Adama</h1><p class="lead"><span class="version">Wersja 6.3: NAPRAWA PRZYCISKU SZKICU TRASY</span><br>Planer działa: Start → Przez → Meta. Atrakcje są dodawane jako punkty trasy z możliwością usunięcia. Dodane: statystyki miesięczne, kopia tras, blokada duplikatów, analiza przejechanych dróg i panel pogody/wiatru.</p><div id="status" class="status">Ładowanie aplikacji...</div><div class="grid"><button id="btnLoc">📍 Gdzie jestem?</button><button id="btnAll">🗺️ Wszystkie trasy</button><button id="btnClear">✖ Wyczyść mapę</button><button id="btnNewPlan" class="warn">🗑️ Nowa trasa</button><button id="btnRestore">↩ Przywróć 135 tras</button><button id="btnBackup">💾 Kopia tras</button></div><section class="panel"><h2>🔎 Trasy</h2><select id="filter"><option value="">Wszystkie dystanse</option><option value="krótka">Krótkie do ok. 50 km</option><option value="średnia">Średnie 50–100 km</option><option value="długa">Długie 100+ km</option></select><input id="search" type="search" placeholder="Szukaj: Skierniewice, Wolbórz, PTTK..."/><div class="grid smallgrid"><button data-near="5">Atrakcje 5 km</button><button data-near="10">Atrakcje 10 km</button><button data-near="20">Atrakcje 20 km</button></div></section><section class="panel"><h2>➕ Dodaj przejechaną trasę GPX / kopię</h2><input id="gpxFile" type="file" accept=".gpx,.json,application/gpx+xml,application/json" multiple><button id="btnImport">Wczytaj GPX z telefonu</button><button id="btnCheckDup" class="secondary">Sprawdź duplikaty</button><p class="hint">Bezpieczna zasada: aplikacja NIE kasuje tras automatycznie. Przy imporcie pomija GPX o tej samej nazwie albo bardzo podobnym śladzie. Usuwanie duplikatów jest tylko po ręcznym potwierdzeniu.</p><div id="dups" class="hidden"></div></section><section class="panel"><h2>📊 Statystyki</h2><div id="stats"></div></section><section class="panel"><h2>🧭 Gdzie jeszcze nie byłem?</h2><p class="hint">Analiza porównuje bazę atrakcji z Twoimi 135 śladami GPX i pokazuje miejsca leżące dalej od przejechanych tras. To pomaga planować nowe odcinki.</p><div class="grid"><button id="btnUnvisited">Pokaż propozycje nowych miejsc</button><button id="btnVisitedHeat" class="secondary">Pokaż przejechane drogi</button></div><div id="unvisited" class="hidden"></div></section><section class="panel"><h2>🌬️ Pogoda i wiatr</h2><p class="hint">Bez klucza pogodowego aplikacja nie pobiera automatycznej prognozy. Wpisz kierunek wiatru z prognozy, a planer podpowie, czy lepiej jechać pętlę zgodnie czy odwrotnie.</p><label>Wiatr wieje z kierunku <select id="windDir"><option value="N">północ</option><option value="NE">północny wschód</option><option value="E">wschód</option><option value="SE">południowy wschód</option><option value="S">południe</option><option value="SW">południowy zachód</option><option value="W">zachód</option><option value="NW">północny zachód</option></select></label><button id="btnWind">Oceń wiatr dla planu</button><div id="windOut" class="orderbox"></div></section><section class="panel"><h2>🧭 Zaplanuj nową trasę</h2>
-<label>Start <input id="planStart" value="Bogusławice 107B"></label>
-<div class="via-head"><b>Punkty przez</b><button id="btnAddVia" type="button" class="secondary">+ Dodaj punkt pośredni</button></div>
-<div id="viaList"></div>
-<label>Meta <input id="planEnd" value="Skierniewice, Konarskiego 1"></label>
-<label>Dystans <select id="planDist"><option>50-80 km</option><option selected>80-120 km</option><option>120-160 km</option></select></label>
-<div class="grid"><button id="btnPlan">Utwórz szkic trasy z atrakcjami</button><button id="btnPreviewOrder" type="button" class="secondary">Pokaż kolejność</button><button id="btnClearPlan" type="button" class="warn">Wyczyść Start/Meta/Przez</button></div>
-<div id="planOrder" class="orderbox"></div>
-<div id="planOut" class="hidden"></div><div id="planAttractions" class="hidden"></div>
-<p class="mini">Zasada V4.8: meta zawsze zostaje ostatnia. Przez możesz przesuwać ▲ ▼, usuwać i dodawać.</p>
-</section><section id="details" class="panel hidden"></section><section id="nearby" class="panel hidden"></section><h2>Lista tras</h2><div id="list"></div><p class="foot">Po wgraniu otwórz: <b>GitHub Pages: dopisz ?v=63</b>. Gdy coś nie działa: Chrome → ⋮ → Odśwież.</p></main><script>if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}</script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="aplikacja-v63.js?v=63"></script></body></html>
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rowerowe Trasy Adama V7.0</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--green:#2d7552;--dark:#14231c;--soft:#eef7f1}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:#f4f6f4;color:#14231c}#map{height:42vh;min-height:310px;width:100%;position:sticky;top:0;z-index:1}.wrap{max-width:900px;margin:-18px auto 0;background:white;border-radius:28px 28px 0 0;position:relative;z-index:2;padding:22px;box-shadow:0 -8px 25px rgba(0,0,0,.12)}h1{font-size:42px;line-height:1.05;margin:0 0 8px}.badge{display:inline-block;background:#dff3e8;color:var(--green);font-weight:800;border-radius:999px;padding:8px 14px;margin:8px 0}.panel{border:1px solid #d6ded8;border-radius:18px;padding:16px;margin:16px 0;background:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}button{border:0;border-radius:14px;background:var(--green);color:white;font-size:16px;font-weight:800;padding:13px 14px;box-shadow:0 3px 8px rgba(0,0,0,.15)}button.secondary{background:#e7efe9;color:#183326}button.warn{background:#a94747}input,select{width:100%;padding:12px;border:1px solid #cbd5cf;border-radius:12px;font-size:16px;margin:6px 0 12px}.row{display:flex;gap:8px;align-items:center;margin:8px 0}.row input{margin:0}.row button{padding:10px 12px}.small{font-size:13px;color:#66756b}.status{padding:12px;border-radius:12px;background:#eef7f1;margin:10px 0;font-weight:700}.listItem{border:1px solid #dce4df;border-radius:16px;padding:12px;margin:10px 0;background:#fafcfb}.attr{display:flex;gap:8px;align-items:flex-start;border-bottom:1px solid #edf1ee;padding:8px 0}.attr:last-child{border-bottom:0}.attr input{width:auto;margin-top:4px}.mono{white-space:pre-wrap;background:#f3f5f4;border-radius:12px;padding:10px;font-family:ui-monospace,monospace}.legend{position:absolute;right:12px;bottom:12px;z-index:500;background:white;border-radius:14px;padding:10px;box-shadow:0 3px 14px rgba(0,0,0,.18);font-size:14px}.dot{display:inline-block;width:18px;height:6px;border-radius:6px;margin-right:6px}.blue{background:#3388ff}.red{background:#d84a4a}.green{background:#2d7552} @media(max-width:600px){h1{font-size:34px}.wrap{padding:17px}}
+</style>
+</head>
+<body>
+<div id="map"><div class="legend"><div><span class="dot blue"></span>przejechane / przykładowe</div><div><span class="dot red"></span>planowana trasa</div><div><span class="dot green"></span>atrakcje</div></div></div>
+<main class="wrap">
+<h1>🚴‍♂️ Rowerowe Trasy Adama</h1>
+<div class="badge">Wersja 7.0 – działająca baza od zera</div>
+<div id="status" class="status">Gotowe. Wpisz Start, punkty Przez i Metę, potem kliknij „Utwórz szkic”.</div>
+<div class="grid">
+<button id="btnLoc">📍 Gdzie jestem?</button><button id="btnAll">🗺️ Pokaż przykładowe trasy</button><button id="btnClear" class="secondary">✖ Wyczyść mapę</button><button id="btnNew" class="warn">🗑️ Nowa trasa</button>
+</div>
+<section class="panel">
+<h2>🧭 Zaplanuj nową trasę</h2>
+<label>Start <input id="start" value="Bogusławice 107B" list="places"></label>
+<div><b>Punkty przez</b> <button id="addVia" type="button" class="secondary">+ Dodaj punkt pośredni</button></div>
+<div id="vias"></div>
+<label>Meta <input id="end" value="Skierniewice, Konarskiego 1" list="places"></label>
+<label>Dystans orientacyjny <select id="dist"><option>50–80 km</option><option selected>80–120 km</option><option>120–160 km</option></select></label>
+<datalist id="places"></datalist>
+<div class="grid"><button id="make">Utwórz szkic trasy z atrakcjami</button><button id="order" class="secondary">Pokaż kolejność</button><button id="mapy" class="secondary">Otwórz w Mapy.cz</button><button id="gpx" class="secondary">Pobierz GPX</button></div>
+<div id="orderBox" class="mono" style="display:none"></div>
+</section>
+<section class="panel">
+<h2>🏰 Atrakcje włączone w trasę</h2>
+<p class="small">Atrakcje dodają się jako punkty trasy. Możesz je odznaczyć albo usunąć i ponownie kliknąć „Utwórz szkic”.</p>
+<div id="attrs"></div>
+</section>
+<section class="panel">
+<h2>📊 Statystyki przykładowe</h2>
+<div id="stats"></div>
+</section>
+<section class="panel">
+<h2>📋 Lista przykładowych tras</h2>
+<div id="routes"></div>
+</section>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const status=t=>$('status').textContent=t;
+const known={
+ 'bogusławice 107a':[51.49355,19.89490,'Bogusławice 107A'],
+ 'boguslawice 107a':[51.49355,19.89490,'Bogusławice 107A'],
+ 'bogusławice 107 a':[51.49355,19.89490,'Bogusławice 107A'],
+ 'bogusławice 107b':[51.49395,19.89535,'Bogusławice 107B'],
+ 'boguslawice 107b':[51.49395,19.89535,'Bogusławice 107B'],
+ 'bogusławice 107 b':[51.49395,19.89535,'Bogusławice 107B'],
+ 'skierniewice konarskiego 1':[51.95940,20.14120,'Skierniewice, Konarskiego 1'],
+ 'skierniewice, konarskiego 1':[51.95940,20.14120,'Skierniewice, Konarskiego 1'],
+ 'jeżów':[51.81320,19.96820,'Jeżów'], 'jezow':[51.81320,19.96820,'Jeżów'],
+ 'gzów':[51.88540,20.05590,'Gzów'], 'gzow':[51.88540,20.05590,'Gzów'],
+ 'byczki':[51.93470,20.11730,'Byczki'],
+ 'puszcza mariańska':[51.98100,20.35020,'Puszcza Mariańska'], 'puszcza marianska':[51.98100,20.35020,'Puszcza Mariańska'],
+ 'bartniki':[52.02690,20.33130,'Bartniki'],
+ 'skierniewice':[51.95480,20.15830,'Skierniewice'],
+ 'rawa mazowiecka':[51.76530,20.25470,'Rawa Mazowiecka'],
+ 'bolimów':[52.07680,20.16390,'Bolimów']
+};
+const attractions=[
+ {name:'Jeżów – zabytkowy układ dawnego miasteczka',type:'zabytek',lat:51.8132,lon:19.9682,desc:'Dobre miejsce na krótki postój i zdjęcie.'},
+ {name:'Puszcza Mariańska – kościół i okolice dawnej osady',type:'architektura',lat:51.9810,lon:20.3502,desc:'Ciekawy punkt na trasach w stronę Żyrardowa i Bartnik.'},
+ {name:'Bartniki – okolice leśne i kolejowe',type:'ciekawostka',lat:52.0269,lon:20.3313,desc:'Dobry punkt końcowy lub przelotowy.'},
+ {name:'Bolimowski Park Krajobrazowy',type:'przyroda',lat:52.047,lon:20.165,desc:'Leśne odcinki i spokojniejsze drogi.'},
+ {name:'Skierniewice – okolice dworca i centrum',type:'architektura',lat:51.9594,lon:20.1412,desc:'Punkt startowy/metowy z dobrym dojazdem.'},
+ {name:'Rawa Mazowiecka – zabytkowy rejon miasta',type:'zabytek',lat:51.7653,lon:20.2547,desc:'Opcjonalny punkt przy dłuższych trasach.'}
+];
+let map,planLayer,attrLayer,baseLayer,markers=[];let selectedAttrs=[];
+function norm(s){return (s||'').toLowerCase().trim().replace(/\s+/g,' ')}
+function distKm(a,b){const R=6371,rad=x=>x*Math.PI/180;const dLat=rad(b[0]-a[0]),dLon=rad(b[1]-a[1]);const s=Math.sin(dLat/2)**2+Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(s))}
+async function resolvePlace(text){const n=norm(text).replace(/^do /,'').replace(/^z /,''); if(known[n]) return known[n];
+ const match=Object.keys(known).find(k=>k.includes(n)||n.includes(k)); if(match) return known[match];
+ throw new Error('Nie znam adresu: '+text+'. Dodaj go do bazy albo wpisz znany punkt, np. Bogusławice 107B, Jeżów, Bartniki.');}
+function initMap(){map=L.map('map',{zoomControl:true}).setView([51.86,20.10],9);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);planLayer=L.layerGroup().addTo(map);attrLayer=L.layerGroup().addTo(map);baseLayer=L.layerGroup().addTo(map);}
+function clearPlan(){planLayer.clearLayers();attrLayer.clearLayers();markers=[];}
+function getViaInputs(){return [...document.querySelectorAll('.viaInput')].map(i=>i.value.trim()).filter(Boolean)}
+function orderTexts(){return [$('start').value.trim(),...getViaInputs(),...selectedAttrs.filter(a=>a.on).map(a=>a.name),$('end').value.trim()].filter(Boolean)}
+async function pointsFromOrder(){const raw=[$('start').value.trim(),...getViaInputs(),$('end').value.trim()].filter(Boolean);let pts=[];for(const r of raw){const p=await resolvePlace(r); pts.push({label:p[2],lat:p[0],lon:p[1],kind:'user'});} const attrPts=pickAttractions(pts).filter(a=>a.on!==false).map(a=>({label:a.name,lat:a.lat,lon:a.lon,kind:'attr'}));return [pts[0],...pts.slice(1,-1),...attrPts,pts[pts.length-1]].filter(Boolean)}
+function pickAttractions(userPts){if(userPts.length<2)return[];const start=[userPts[0].lat,userPts[0].lon],end=[userPts[userPts.length-1].lat,userPts[userPts.length-1].lon];let arr=attractions.map(a=>({...a,on:true,score:distKm(start,[a.lat,a.lon])+distKm([a.lat,a.lon],end)-distKm(start,end)})).filter(a=>a.score<35).slice(0,5);selectedAttrs=arr;renderAttrs();return arr}
+function renderAttrs(){const box=$('attrs'); if(!selectedAttrs.length){box.innerHTML='<p class="small">Po utworzeniu szkicu pojawią się tu atrakcje.</p>';return;} box.innerHTML=selectedAttrs.map((a,i)=>`<div class="attr"><input type="checkbox" ${a.on?'checked':''} data-ai="${i}"><div><b>${a.name}</b><br><span class="small">${a.type} · ${a.lat.toFixed(5)}, ${a.lon.toFixed(5)}<br>${a.desc}</span><br><button class="secondary" data-del="${i}" type="button">Usuń</button></div></div>`).join('');box.querySelectorAll('[data-ai]').forEach(ch=>ch.onchange=()=>{selectedAttrs[+ch.dataset.ai].on=ch.checked;makePlan();});box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{selectedAttrs.splice(+b.dataset.del,1);renderAttrs();makePlan(false);});}
+async function makePlan(repick=true){try{clearPlan();let base=[];for(const t of [$('start').value.trim(),...getViaInputs(),$('end').value.trim()].filter(Boolean)){const p=await resolvePlace(t);base.push({label:p[2],lat:p[0],lon:p[1],kind:'user'});} if(base.length<2)throw new Error('Podaj Start i Metę.'); if(repick)pickAttractions(base); const pts=[base[0],...base.slice(1,-1),...selectedAttrs.filter(a=>a.on).map(a=>({label:a.name,lat:a.lat,lon:a.lon,kind:'attr'})),base[base.length-1]]; const latlngs=pts.map(p=>[p.lat,p.lon]);L.polyline(latlngs,{color:'#d84a4a',weight:6,opacity:.9}).addTo(planLayer);pts.forEach((p,i)=>L.marker([p.lat,p.lon]).addTo(planLayer).bindPopup(`${i+1}. ${p.label}`));selectedAttrs.filter(a=>a.on).forEach(a=>L.circleMarker([a.lat,a.lon],{radius:9,color:'#2d7552',fillColor:'#2d7552',fillOpacity:.75}).addTo(attrLayer).bindPopup(a.name));map.fitBounds(L.latLngBounds(latlngs),{padding:[25,25]});showOrder(pts);status('Narysowano szkic trasy. Uwaga: to szkic po punktach, nie dokładne prowadzenie po drogach. Do nawigacji użyj Mapy.cz.');}
+catch(e){status('Błąd: '+e.message);alert(e.message)}}
+function showOrder(pts){const arr=pts||null;$('orderBox').style.display='block';$('orderBox').textContent=(arr?arr.map((p,i)=>`${i+1}. ${p.label} (${p.lat.toFixed(5)}, ${p.lon.toFixed(5)})`).join('\n'):orderTexts().map((t,i)=>`${i+1}. ${t}`).join('\n'));}
+function addVia(val=''){const div=document.createElement('div');div.className='row';div.innerHTML=`<input class="viaInput" list="places" value="${val}" placeholder="np. Jeżów, Gzów, Puszcza Mariańska"><button class="secondary up" type="button">▲</button><button class="secondary down" type="button">▼</button><button class="warn del" type="button">Usuń</button>`;$('vias').appendChild(div);div.querySelector('.del').onclick=()=>div.remove();div.querySelector('.up').onclick=()=>{if(div.previousElementSibling)$('vias').insertBefore(div,div.previousElementSibling)};div.querySelector('.down').onclick=()=>{if(div.nextElementSibling)$('vias').insertBefore(div.nextElementSibling,div)};}
+function openMapy(){const texts=orderTexts(); if(texts.length<2){alert('Najpierw utwórz trasę.');return;} const q=texts.map(encodeURIComponent).join(';'); window.open('https://mapy.cz/zakladni?planovani-trasy&x=20.1&y=51.9&z=9&rc='+q,'_blank');}
+async function downloadGpx(){try{const pts=await pointsFromOrder();const gpx=`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Rowerowe Trasy Adama V7"><trk><name>Plan trasy</name><trkseg>${pts.map(p=>`<trkpt lat="${p.lat}" lon="${p.lon}"><name>${p.label.replace(/[<>&]/g,'')}</name></trkpt>`).join('')}</trkseg></trk></gpx>`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([gpx],{type:'application/gpx+xml'}));a.download='plan-trasy.gpx';a.click();}catch(e){alert(e.message)}}
+function sampleRoutes(){baseLayer.clearLayers();const samples=[[[51.959,20.141],[51.813,19.968],[51.494,19.895]],[[51.959,20.141],[52.047,20.165],[52.027,20.331],[51.981,20.350]]];samples.forEach(s=>L.polyline(s,{color:'#3388ff',weight:4,opacity:.65}).addTo(baseLayer));map.fitBounds(L.latLngBounds(samples.flat()),{padding:[20,20]});status('Pokazano przykładowe przejechane trasy.');}
+function stats(){ $('stats').innerHTML='<div class="listItem"><b>Maj:</b> przykładowe statystyki działają. Po imporcie GPX można tu podpiąć realne miesiące.</div><div class="listItem"><b>Plan:</b> Start → Przez → Atrakcje → Meta.</div>'; }
+function routes(){ $('routes').innerHTML=['40 Wolbórz – Skierniewice','37 PTTK Skierniewice','Bogusławice – Jeżów – Skierniewice'].map((n,i)=>`<div class="listItem"><b>${i+1}. ${n}</b><br><span class="small">Przykładowa pozycja. Docelowo można tu podłączyć Twoje 135 GPX.</span></div>`).join('')}
+function boot(){initMap();Object.values(known).forEach(v=>{const o=document.createElement('option');o.value=v[2];$('places').appendChild(o)});addVia('Jeżów');$('addVia').onclick=()=>addVia();$('make').onclick=()=>makePlan(true);$('order').onclick=()=>showOrder();$('mapy').onclick=openMapy;$('gpx').onclick=downloadGpx;$('btnAll').onclick=sampleRoutes;$('btnClear').onclick=()=>{baseLayer.clearLayers();clearPlan();status('Mapa wyczyszczona.')};$('btnNew').onclick=()=>{$('start').value='';$('end').value='';$('vias').innerHTML='';selectedAttrs=[];renderAttrs();clearPlan();status('Wyczyszczono formularz nowej trasy.')};$('btnLoc').onclick=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>{L.marker([p.coords.latitude,p.coords.longitude]).addTo(map).bindPopup('Twoja pozycja').openPopup();map.setView([p.coords.latitude,p.coords.longitude],13)},()=>alert('Brak zgody na lokalizację.')):alert('Brak geolokalizacji.');stats();routes();renderAttrs();setTimeout(()=>map.invalidateSize(),400);status('Aplikacja V7.0 działa.');}
+window.addEventListener('DOMContentLoaded',boot);
+</script>
+</body></html>
