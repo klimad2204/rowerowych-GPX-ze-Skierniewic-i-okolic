@@ -1,0 +1,132 @@
+[
+  {
+    "name": "Pałac Prymasowski w Skierniewicach",
+    "lat": 51.9614053,
+    "lon": 20.1415125,
+    "type": "zabytek",
+    "note": "GPS wg Mapy.com / OSM; warto zweryfikować przy dojeździe."
+  },
+  {
+    "name": "Parowozownia Skierniewice",
+    "lat": 51.9629,
+    "lon": 20.1496,
+    "type": "kolej",
+    "note": "Adres: ul. Łowicka 1; punkt orientacyjny do uzupełnienia."
+  },
+  {
+    "name": "Zalew Zadębie",
+    "lat": 51.9437,
+    "lon": 20.1385,
+    "type": "przyroda/odpoczynek",
+    "note": "Miejsce odpoczynku przy wodzie."
+  },
+  {
+    "name": "Arboretum SGGW w Rogowie",
+    "lat": 51.82163,
+    "lon": 19.89942,
+    "type": "przyroda",
+    "note": "GPS wejścia wg źródeł turystycznych."
+  },
+  {
+    "name": "Pałac w Nieborowie",
+    "lat": 52.0666,
+    "lon": 20.0702,
+    "type": "pałac",
+    "note": "GPS orientacyjny; muzeum i ogród."
+  },
+  {
+    "name": "Park Arkadia",
+    "lat": 52.075,
+    "lon": 20.008,
+    "type": "park romantyczny",
+    "note": "GPS orientacyjny do dalszej weryfikacji."
+  },
+  {
+    "name": "Mauzoleum żołnierzy niemieckich w Joachimowie-Mogiłach",
+    "lat": 52.05657,
+    "lon": 20.228994,
+    "type": "cmentarz wojenny",
+    "note": "Cmentarz/mauzoleum żołnierzy z I i II wojny światowej w Bolimowskim Parku Krajobrazowym. Warto zatrzymać się przy centralnym kamiennym kręgu i krzyżu.",
+    "orientation": "Joachimów-Mogiły, przy lesie w Bolimowskim Parku Krajobrazowym"
+  },
+  {
+    "name": "Mogiła nieznanego polskiego żołnierza – Bartniki",
+    "lat": 52.0122,
+    "lon": 20.3432,
+    "type": "mogiła wojenna",
+    "note": "Mogiła nieznanego żołnierza Wojska Polskiego z II wojny światowej. Lokalizacja orientacyjna: Bartniki; przed dojazdem sprawdź na miejscu/cmentarzu.",
+    "orientation": "Bartniki, okolice cmentarza/parafii"
+  },
+  {
+    "name": "Cmentarz rzymskokatolicki w Bartnikach",
+    "lat": 52.012,
+    "lon": 20.344,
+    "type": "zabytek / cmentarz",
+    "note": "Cmentarz parafialny z początku XX wieku; w aplikacji oznaczony jako punkt architektury i historii lokalnej.",
+    "orientation": "Bartniki, przy głównej części wsi"
+  },
+  {
+    "name": "Pomnik Tadeusza Kościuszki w Puszczy Mariańskiej",
+    "lat": 51.9798,
+    "lon": 20.35,
+    "type": "pomnik",
+    "note": "Pomnik na małym rynku w Puszczy Mariańskiej; dobry punkt orientacyjny przy planowaniu przez tę miejscowość.",
+    "orientation": "centrum Puszczy Mariańskiej, ryneczek"
+  },
+  {
+    "name": "Kościół św. Michała Archanioła w Puszczy Mariańskiej",
+    "lat": 51.9802,
+    "lon": 20.3492,
+    "type": "zabytek architektury",
+    "note": "Charakterystyczny kościół w centrum miejscowości, dobry punkt postoju i orientacji.",
+    "orientation": "centrum Puszczy Mariańskiej"
+  },
+  {
+    "name": "Pomnik Stanisława Papczyńskiego w Puszczy Mariańskiej",
+    "lat": 51.98,
+    "lon": 20.3502,
+    "type": "pomnik",
+    "note": "Pomnik związany z lokalną historią Puszczy Mariańskiej i zgromadzeniem marianów.",
+    "orientation": "centrum Puszczy Mariańskiej"
+  },
+  {
+    "name": "Bolimowski Park Krajobrazowy – okolice Rawki",
+    "lat": 52.06,
+    "lon": 20.24,
+    "type": "przyroda / historia",
+    "note": "Obszar przyrodniczy i historyczny z licznymi śladami walk z I wojny światowej; dobry teren na spokojne odcinki rowerowe.",
+    "orientation": "między Bolimowem, Joachimowem-Mogiłami i Rawką"
+  },
+  {
+    "name": "Kościół św. Anny w Bolimowie",
+    "lat": 52.0769,
+    "lon": 20.163,
+    "type": "zabytek architektury",
+    "note": "Zabytkowy kościół w centrum Bolimowa; dobry punkt orientacyjny przy trasach przez Bolimów.",
+    "orientation": "centrum Bolimowa"
+  },
+  {
+    "name": "Rynek i historyczny układ Bolimowa",
+    "lat": 52.0767,
+    "lon": 20.1631,
+    "type": "zabytek / ciekawostka",
+    "note": "Małomiasteczkowy układ rynku; dobre miejsce krótkiego postoju na trasie w stronę Puszczy Bolimowskiej.",
+    "orientation": "rynek w Bolimowie"
+  },
+  {
+    "name": "Dworzec kolejowy Radziwiłłów Mazowiecki",
+    "lat": 52.0269,
+    "lon": 20.352,
+    "type": "architektura kolejowa",
+    "note": "Punkt orientacyjny przy trasach przez Radziwiłłów i Puszczę Mariańską.",
+    "orientation": "Radziwiłłów, okolice stacji kolejowej"
+  },
+  {
+    "name": "Rawka – dolina rzeki",
+    "lat": 52.052,
+    "lon": 20.255,
+    "type": "przyroda / odpoczynek",
+    "note": "Malownicze okolice Rawki w rejonie Bolimowskiego Parku Krajobrazowego; dobry motyw krajobrazowy na trasie.",
+    "orientation": "okolice Joachimowa-Mogił i Rawki"
+  }
+]
