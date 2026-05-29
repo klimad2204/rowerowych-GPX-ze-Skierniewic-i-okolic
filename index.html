@@ -3,106 +3,123 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Cache-Control" content="no-store">
-<title>Rowerowe Trasy Adama V7.4</title>
+<title>Rowerowe Trasy Adama V8.0</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-:root{--g:#2f7656;--bg:#f6f8f6;--card:#fff;--text:#13211a;--muted:#647067;--line:#d7ded8;--red:#d94b4b;}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-#map{height:42vh;min-height:300px;width:100%;border-bottom:1px solid var(--line);}
-main{max-width:920px;margin:0 auto;padding:16px}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-h1{font-size:clamp(32px,8vw,58px);line-height:1;margin:0 0 12px}.version{display:inline-block;background:#e4f3ea;color:#1e6c4a;padding:10px 14px;border-radius:999px;font-weight:800}.status{padding:10px 12px;border-radius:12px;background:#eef5f0;margin:10px 0;color:#24563e;font-weight:700}.bad{background:#ffe8e8;color:#8c1f1f}.ok{background:#e7f5eb;color:#17643e}
-button,.btn{border:0;background:var(--g);color:white;border-radius:14px;padding:13px 15px;font-size:16px;font-weight:800;margin:5px 0;box-shadow:0 3px 8px rgba(0,0,0,.12)}button.secondary{background:#e8efe9;color:#173b2b}button.warn{background:#fff1e3;color:#793900;border:1px solid #ffd2a3}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}input,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;background:white;margin:5px 0 10px}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.small{font-size:13px;color:var(--muted)}.listitem{border:1px solid var(--line);border-radius:14px;padding:12px;margin:8px 0;background:#fff}.hidden{display:none}.pill{display:inline-block;padding:3px 8px;background:#eaf4ee;border-radius:999px;font-size:12px;margin:2px}.redline{color:var(--red);font-weight:800}.leaflet-control-attribution{font-size:11px}.tools{display:flex;gap:8px;flex-wrap:wrap}.tools button{font-size:14px;padding:10px}.textarea{white-space:pre-wrap;background:#f2f5f2;border:1px solid var(--line);border-radius:12px;padding:10px;max-height:200px;overflow:auto}.viaItem{display:grid;grid-template-columns:1fr auto auto auto;gap:5px;align-items:center}.viaItem button{padding:8px 10px;border-radius:10px}.marker-start{filter:hue-rotate(95deg)}.marker-end{filter:hue-rotate(300deg)}
+:root{--bg:#eef7ef;--card:#fff;--text:#123;--green:#0b7a3b;--red:#d71920;--muted:#667;--line:#0b7a3b}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}#map{height:48vh;min-height:330px;width:100%;position:sticky;top:0;z-index:1;border-bottom:3px solid #0b7a3b}.wrap{max-width:980px;margin:0 auto;padding:12px}.card,.panel{background:var(--card);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 8px 22px rgba(0,0,0,.11)}h1{margin:.2rem 0 .4rem;font-size:1.55rem}.version{display:inline-block;background:#0b7a3b;color:#fff;border-radius:999px;padding:4px 10px;font-weight:700}.status{padding:10px;border-radius:12px;background:#eef;margin:8px 0;font-weight:700}.ok{background:#e7f8ec;color:#075c2c}.err{background:#ffe8e8;color:#970000}.warnbox{background:#fff8df;color:#765200}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}button,input,select,textarea{font:inherit;border-radius:12px;border:1px solid #ccd;padding:10px}button{background:#0b7a3b;color:#fff;border:0;font-weight:800;cursor:pointer}button.secondary{background:#345}button.warn{background:#b94400}button.danger{background:#b00020}label{display:block;margin:8px 0;font-weight:700}input,select,textarea{width:100%;background:#fff}small,.hint{color:var(--muted)}.route{border:1px solid #dde;border-radius:14px;padding:10px;margin:8px 0;background:#fbfffb}.route b{color:#063}.route .meta{color:#667;font-size:.92rem}.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.row button{flex:1;min-width:130px}.hidden{display:none}.order{background:#f7f7f7;border:1px dashed #bbb;border-radius:12px;padding:10px;white-space:pre-wrap}.att{border-left:5px solid #0b7a3b;background:#f8fff8;padding:8px;border-radius:10px;margin:8px 0}.att.off{opacity:.45;border-left-color:#aaa}.pill{display:inline-block;border-radius:999px;background:#eef;padding:3px 8px;margin:2px;font-size:.85rem}.progress{height:14px;background:#ddd;border-radius:999px;overflow:hidden;margin:8px 0}.bar{height:100%;background:#0b7a3b;width:0%}.mini{font-size:.85rem;color:#667}@media(max-width:650px){#map{height:42vh}.grid,.grid3{grid-template-columns:1fr}.wrap{padding:8px}.card,.panel{border-radius:14px;margin:8px 0}}
 </style>
 </head>
 <body>
 <div id="map"></div>
-<main>
-<section class="card">
-<h1>🚴‍♂️ Rowerowe Trasy Adama</h1>
-<p><span class="version">Wersja 7.4 — naprawiony import GPX</span></p>
-<div id="status" class="status">Uruchamiam aplikację...</div>
-<div class="grid">
-<button id="btnLoc">📍 Gdzie jestem?</button>
-<button id="btnAll">🗺️ Wszystkie trasy</button>
-<button id="btnClear" class="secondary">✖ Wyczyść mapę</button>
-<button id="btnBackup" class="secondary">💾 Kopia tras</button>
+<div class="wrap">
+  <section class="card">
+    <h1>🚴‍♂️ Rowerowe Trasy Adama</h1>
+    <p><span class="version">V8.0 — duże GPX 54 MB, 135 tras</span></p>
+    <div id="status" class="status">Ładowanie aplikacji...</div>
+    <div class="grid">
+      <button id="btnAll">🗺️ Pokaż wszystkie trasy</button>
+      <button id="btnClear" class="secondary">✖ Wyczyść mapę</button>
+      <button id="btnLoc" class="secondary">📍 Gdzie jestem?</button>
+      <button id="btnNew" class="warn">🗑️ Nowa trasa</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>➕ Wczytaj GPX z telefonu</h2>
+    <input id="gpxFile" type="file" accept=".gpx,application/gpx+xml,text/xml" multiple>
+    <button id="btnImport">Wczytaj wybrane GPX</button>
+    <div class="progress hidden" id="prog"><div class="bar" id="bar"></div></div>
+    <p class="hint">Duży plik 54 MB jest obsługiwany przez uproszczenie śladów. Aplikacja nie rysuje 480 tys. punktów naraz — dzięki temu telefon się nie zawiesza.</p>
+  </section>
+
+  <section class="panel">
+    <h2>🧭 Zaplanuj trasę</h2>
+    <label>Start <input id="start" value="Bogusławice 107B"></label>
+    <label>Przez <textarea id="via" rows="3" placeholder="np. Puszcza Mariańska\nBartniki"></textarea></label>
+    <label>Meta <input id="end" value="Skierniewice, Konarskiego 1"></label>
+    <div class="grid">
+      <button id="btnPlan">Utwórz szkic trasy</button>
+      <button id="btnAddAtt" class="secondary">Dodaj atrakcje do trasy</button>
+      <button id="btnMapy" class="secondary">Wytycz w Mapy.cz</button>
+      <button id="btnGpx" class="secondary">Pobierz GPX planu</button>
+    </div>
+    <div id="order" class="order"></div>
+    <div id="atts"></div>
+  </section>
+
+  <section class="panel">
+    <h2>📊 Statystyki</h2>
+    <div id="stats">Brak danych.</div>
+  </section>
+
+  <section class="panel">
+    <h2>🔎 Lista tras</h2>
+    <input id="search" type="search" placeholder="Szukaj trasy, np. Wolbórz, Skierniewice">
+    <select id="filter"><option value="">Wszystkie</option><option value="50">do 50 km</option><option value="100">50–100 km</option><option value="101">100+ km</option></select>
+    <div id="list"></div>
+  </section>
 </div>
-</section>
-<section class="panel">
-<h2>➕ Wczytaj GPX z telefonu</h2>
-<input id="gpxFile" type="file" accept=".gpx,.xml,application/gpx+xml,text/xml,*/*" multiple>
-<div class="grid"><button id="btnImport">Wczytaj wybrane GPX</button><button id="btnClearSaved" class="warn">Usuń tylko dodane z telefonu</button></div>
-<p class="small">Wybierz pliki .gpx z telefonu i kliknij „Wczytaj wybrane GPX”. Aplikacja odczytuje punkty <b>trkpt</b>, <b>rtept</b> i <b>wpt</b>, pokazuje ślad na mapie i zapisuje go w pamięci przeglądarki.</p>
-<div id="importInfo" class="small"></div>
-</section>
-<section class="panel">
-<h2>🧭 Zaplanuj szkic trasy</h2>
-<label>Start <input id="planStart" value="Bogusławice 107B"></label>
-<div class="row"><b>Punkty przez</b><button id="btnAddVia" class="secondary" type="button">+ Dodaj punkt</button></div>
-<div id="viaList"></div>
-<label>Meta <input id="planEnd" value="Skierniewice, Konarskiego 1"></label>
-<div class="grid"><button id="btnPlan">Utwórz szkic</button><button id="btnOrder" class="secondary">Pokaż kolejność</button><button id="btnNew" class="warn">Nowa trasa</button></div>
-<div id="planOut" class="textarea hidden"></div>
-</section>
-<section class="panel">
-<h2>🔎 Trasy</h2>
-<input id="search" type="search" placeholder="Szukaj nazwy trasy...">
-<div class="grid"><button id="btnLoadBase" class="secondary">Wczytaj trasy z trasy.geojson</button><button id="btnStats" class="secondary">Statystyki</button></div>
-<div id="stats" class="small"></div>
-<div id="list"></div>
-</section>
-</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-(function(){
-'use strict';
-const $=id=>document.getElementById(id);
-const status=$('status'), list=$('list'), info=$('importInfo');
-function msg(t,bad=false){status.textContent=t;status.className='status '+(bad?'bad':'ok');}
-function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
-function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();}
-function distKm(a,b){const R=6371, dLat=(b[0]-a[0])*Math.PI/180, dLon=(b[1]-a[1])*Math.PI/180; const la1=a[0]*Math.PI/180, la2=b[0]*Math.PI/180; const h=Math.sin(dLat/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dLon/2)**2; return 2*R*Math.asin(Math.sqrt(h));}
-function lenKm(pts){let s=0; for(let i=1;i<pts.length;i++) s+=distKm(pts[i-1],pts[i]); return s;}
-let map, allLayer, activeLayer, markerLayer, planLayer; let routes=[];
-const fixed={
- 'boguslawice 107a':[51.5529,19.9259], 'boguslawice 107 a':[51.5529,19.9259],
- 'boguslawice 107b':[51.5527,19.9257], 'boguslawice 107 b':[51.5527,19.9257],
- 'skierniewice konarskiego 1':[51.9549,20.1586], 'skierniewice konarskiego':[51.9549,20.1586], 'konarskiego 1':[51.9549,20.1586],
- 'skierniewice':[51.9547,20.1583], 'jezow':[51.8139,19.9682], 'jeżów':[51.8139,19.9682], 'gzow':[51.8495,20.0222], 'byczki':[51.9208,20.0771],
- 'puszcza marianska':[51.9817,20.3509], 'puszcza mariańska':[51.9817,20.3509], 'bartniki':[52.0212,20.3324], 'ruda':[51.7686,20.2424]
+const $=id=>document.getElementById(id);let map,allLayer,selLayer,planLayer,attLayer,locMarker;let routes=[],addedRoutes=[],planPts=[],planAtt=[];
+const known={
+ 'bogusławice 107a':[51.59715,19.92220],'boguslawice 107a':[51.59715,19.92220],'bogusławice 107 a':[51.59715,19.92220],
+ 'bogusławice 107b':[51.59700,19.92265],'boguslawice 107b':[51.59700,19.92265],'bogusławice 107 b':[51.59700,19.92265],
+ 'skierniewice konarskiego 1':[51.95460,20.15890],'skierniewice, konarskiego 1':[51.95460,20.15890],
+ 'skierniewice':[51.9547,20.1583],'jeżów':[51.8135,19.9685],'jezow':[51.8135,19.9685],'gzów':[51.8959,20.0122],'gzow':[51.8959,20.0122],
+ 'byczki':[51.9308,20.0828],'puszcza mariańska':[51.9797,20.3505],'puszcza marianska':[51.9797,20.3505],'bartniki':[52.0479,20.3307],
+ 'wolbórz':[51.5016,19.8309],'wolborz':[51.5016,19.8309],'rava mazowiecka':[51.7644,20.2549],'rawa mazowiecka':[51.7644,20.2549]
 };
-function pointFor(q){let n=norm(q); if(fixed[n]) return fixed[n]; for(const k of Object.keys(fixed)){ if(n.includes(norm(k)) || norm(k).includes(n)) return fixed[k]; } return null;}
-function initMap(){map=L.map('map',{zoomControl:true}).setView([51.87,20.08],10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map); allLayer=L.layerGroup().addTo(map); activeLayer=L.layerGroup().addTo(map); markerLayer=L.layerGroup().addTo(map); planLayer=L.layerGroup().addTo(map); setTimeout(()=>map.invalidateSize(),300);}
-function showRoute(r, color='#2f80ed', fit=true){if(!r.points||r.points.length<2){msg('Ta trasa nie ma punktów GPS.',true);return;} activeLayer.clearLayers(); const line=L.polyline(r.points,{color,weight:5,opacity:.9}).addTo(activeLayer); L.marker(r.points[0]).addTo(activeLayer).bindPopup('Start: '+escapeHtml(r.name)); L.marker(r.points[r.points.length-1]).addTo(activeLayer).bindPopup('Meta: '+escapeHtml(r.name)); if(fit) map.fitBounds(line.getBounds(),{padding:[25,25]}); msg('Pokazano trasę: '+r.name+' ('+r.km.toFixed(1)+' km)');}
-function addRouteToAll(r){if(r.points&&r.points.length>1)L.polyline(r.points,{color:'#3b8de3',weight:3,opacity:.45}).addTo(allLayer);}
-function render(){const q=norm($('search').value); list.innerHTML=''; let shown=0; routes.filter(r=>!q||norm(r.name).includes(q)).forEach((r,i)=>{shown++; const div=document.createElement('div'); div.className='listitem'; div.innerHTML='<b>'+escapeHtml(r.name)+'</b><br><span class="pill">'+r.km.toFixed(1)+' km</span> <span class="pill">'+r.points.length+' pkt GPS</span><div class="tools"><button data-show="'+i+'">Pokaż na mapie</button><button data-dl="'+i+'" class="secondary">Pobierz GPX</button></div>'; list.appendChild(div);}); if(!shown) list.innerHTML='<p class="small">Brak tras do pokazania.</p>';}
-function saveLocal(){localStorage.setItem('adam_routes_v74',JSON.stringify(routes.filter(r=>r.local)));}
-function loadLocal(){try{const a=JSON.parse(localStorage.getItem('adam_routes_v74')||'[]'); if(Array.isArray(a)) a.forEach(r=>{r.local=true; routes.push(r);});}catch(e){}}
-function routeExists(name, pts){const n=norm(name); return routes.some(r=>norm(r.name)===n || (pts&&r.points&&r.points.length===pts.length&&Math.abs(lenKm(r.points)-lenKm(pts))<0.2));}
-function parseGpx(text,name){const xml=new DOMParser().parseFromString(text,'application/xml'); if(xml.querySelector('parsererror')) throw new Error('Plik nie wygląda jak poprawny GPX/XML.'); const nodes=[...xml.querySelectorAll('trkpt'),...xml.querySelectorAll('rtept'),...xml.querySelectorAll('wpt')]; const pts=[]; for(const n of nodes){const lat=parseFloat(n.getAttribute('lat')), lon=parseFloat(n.getAttribute('lon')); if(Number.isFinite(lat)&&Number.isFinite(lon)) pts.push([lat,lon]);} if(pts.length<2) throw new Error('Nie znaleziono punktów GPS w pliku.'); const nm=(xml.querySelector('trk > name, rte > name, metadata > name, name')?.textContent||name||'Trasa GPX').trim(); return {name:nm,points:pts,km:lenKm(pts),local:true,source:'telefon'};}
-function readFile(file){return new Promise((res,rej)=>{const fr=new FileReader(); fr.onload=()=>res(String(fr.result||'')); fr.onerror=()=>rej(new Error('Nie udało się odczytać pliku.')); fr.readAsText(file);});}
-async function importFiles(){const files=[...$('gpxFile').files]; if(!files.length){msg('Najpierw kliknij „Wybierz pliki” i zaznacz GPX.',true); return;} let ok=0, dup=0, err=[]; for(const f of files){try{const txt=await readFile(f); const r=parseGpx(txt,f.name); if(routeExists(r.name,r.points)){dup++; continue;} routes.push(r); addRouteToAll(r); ok++;}catch(e){err.push(f.name+': '+e.message);} } saveLocal(); render(); if(routes.length) showRoute(routes[routes.length-1]); info.innerHTML='Wczytano: <b>'+ok+'</b>, pominięto duplikaty: <b>'+dup+'</b>'+(err.length?'<br><span class="redline">Błędy:</span><br>'+err.map(escapeHtml).join('<br>'):''); msg('Import zakończony. Wczytano '+ok+' plików GPX.');}
-function toGpx(r){return '<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Rowerowe Trasy Adama" xmlns="http://www.topografix.com/GPX/1/1">\n<trk><name>'+escapeHtml(r.name)+'</name><trkseg>\n'+r.points.map(p=>'<trkpt lat="'+p[0]+'" lon="'+p[1]+'"></trkpt>').join('\n')+'\n</trkseg></trk>\n</gpx>';}
-function download(name,content,type='application/gpx+xml'){const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
-async function loadBase(){try{const res=await fetch('trasy.geojson?v='+Date.now(),{cache:'no-store'}); if(!res.ok) throw new Error('Brak pliku trasy.geojson'); const gj=await res.json(); let count=0; (gj.features||[]).forEach((f,idx)=>{let coords=f.geometry?.coordinates||[]; if(f.geometry?.type==='MultiLineString') coords=coords.flat(); if(f.geometry?.type==='LineString' && coords.length>1){const pts=coords.map(c=>[c[1],c[0]]).filter(p=>Number.isFinite(p[0])&&Number.isFinite(p[1])); if(pts.length>1){const name=f.properties?.name||f.properties?.Name||('Trasa '+(idx+1)); if(!routeExists(name,pts)){const r={name,points:pts,km:lenKm(pts),local:false,source:'trasy.geojson'}; routes.push(r); addRouteToAll(r); count++;}}}}); render(); if(routes.length){const group=L.featureGroup(); routes.slice(0,80).forEach(r=>{if(r.points.length>1)L.polyline(r.points).addTo(group)}); if(group.getLayers().length) map.fitBounds(group.getBounds(),{padding:[20,20]});} msg('Wczytano '+count+' tras z trasy.geojson.'); }catch(e){msg('Nie udało się wczytać trasy.geojson: '+e.message,true);} }
-function makePlan(){planLayer.clearLayers(); const order=[]; const s=pointFor($('planStart').value); const e=pointFor($('planEnd').value); if(!s){msg('Nie rozpoznano startu: '+$('planStart').value,true);return;} order.push({name:$('planStart').value,pt:s}); document.querySelectorAll('.viaInput').forEach(inp=>{const p=pointFor(inp.value); if(p) order.push({name:inp.value,pt:p});}); if(!e){msg('Nie rozpoznano mety: '+$('planEnd').value,true);return;} order.push({name:$('planEnd').value,pt:e}); const pts=order.map(x=>x.pt); const line=L.polyline(pts,{color:'#d84a4a',weight:6,opacity:.9,dashArray:'8,8'}).addTo(planLayer); order.forEach((o,i)=>L.marker(o.pt).addTo(planLayer).bindPopup((i+1)+'. '+escapeHtml(o.name))); map.fitBounds(line.getBounds(),{padding:[30,30]}); $('planOut').classList.remove('hidden'); $('planOut').textContent=order.map((o,i)=>(i+1)+'. '+o.name+' — '+o.pt[0].toFixed(5)+', '+o.pt[1].toFixed(5)).join('\n')+'\n\nSzkic: '+lenKm(pts).toFixed(1)+' km po prostej. Do dokładnej nawigacji otwórz Mapy.cz i dodaj punkty w tej kolejności.'; msg('Narysowano szkic trasy.');}
-function addVia(v=''){const div=document.createElement('div'); div.className='viaItem'; div.innerHTML='<input class="viaInput" placeholder="np. Jeżów" value="'+escapeHtml(v)+'"><button class="secondary up">▲</button><button class="secondary down">▼</button><button class="warn del">×</button>'; $('viaList').appendChild(div);}
-function bind(){
-$('btnImport').onclick=importFiles; $('gpxFile').addEventListener('change',()=>{info.textContent='Wybrano plików: '+$('gpxFile').files.length;});
-$('btnClearSaved').onclick=()=>{routes=routes.filter(r=>!r.local); localStorage.removeItem('adam_routes_v74'); allLayer.clearLayers(); activeLayer.clearLayers(); routes.forEach(addRouteToAll); render(); msg('Usunięto trasy dodane z telefonu.');};
-$('btnLoadBase').onclick=loadBase; $('btnAll').onclick=()=>{allLayer.clearLayers(); routes.forEach(addRouteToAll); msg('Pokazano wszystkie wczytane trasy.');};
-$('btnClear').onclick=()=>{activeLayer.clearLayers(); planLayer.clearLayers(); markerLayer.clearLayers(); msg('Wyczyszczono mapę.');};
-$('btnBackup').onclick=()=>download('kopia_tras_adama.json',JSON.stringify(routes,null,2),'application/json');
-$('btnStats').onclick=()=>{$('stats').innerHTML='Tras: <b>'+routes.length+'</b>, razem około <b>'+routes.reduce((a,r)=>a+r.km,0).toFixed(1)+' km</b>.';};
-$('search').oninput=render; $('btnPlan').onclick=makePlan; $('btnOrder').onclick=makePlan; $('btnNew').onclick=()=>{$('planStart').value='';$('planEnd').value='';$('viaList').innerHTML='';planLayer.clearLayers();$('planOut').classList.add('hidden');msg('Wyczyszczono plan.');}; $('btnAddVia').onclick=()=>addVia();
-$('btnLoc').onclick=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>{const pt=[p.coords.latitude,p.coords.longitude]; markerLayer.clearLayers(); L.marker(pt).addTo(markerLayer).bindPopup('Twoja pozycja').openPopup(); map.setView(pt,14); msg('Pokazano Twoją pozycję.');},()=>msg('Nie udało się pobrać lokalizacji.',true)):msg('Brak geolokalizacji w przeglądarce.',true);
-$('viaList').onclick=e=>{const item=e.target.closest('.viaItem'); if(!item)return; if(e.target.classList.contains('del')) item.remove(); if(e.target.classList.contains('up')&&item.previousElementSibling) item.parentNode.insertBefore(item,item.previousElementSibling); if(e.target.classList.contains('down')&&item.nextElementSibling) item.parentNode.insertBefore(item.nextElementSibling,item);};
-list.onclick=e=>{const b=e.target.closest('button'); if(!b)return; const i=+(b.dataset.show??b.dataset.dl); const r=routes[i]; if(!r)return; if(b.dataset.show!==undefined)showRoute(r); if(b.dataset.dl!==undefined)download((r.name||'trasa').replace(/[^a-z0-9ąćęłńóśźż -]/gi,'_')+'.gpx',toGpx(r));};
-}
-function start(){try{initMap(); loadLocal(); routes.forEach(addRouteToAll); render(); bind(); addVia(''); loadBase(); msg('Aplikacja gotowa. Możesz wczytać GPX z telefonu.');}catch(e){msg('Błąd startu: '+e.message,true); console.error(e);}}
-window.addEventListener('DOMContentLoaded',start);
-})();
+const attractions=[
+ {name:'Zalew Skierniewicki',type:'przyroda / odpoczynek',lat:51.9672,lon:20.1393,info:'miejsce odpoczynku nad wodą'},
+ {name:'Ratusz w Skierniewicach',type:'zabytek architektury',lat:51.9548,lon:20.1586,info:'centrum miasta, zabytkowa zabudowa rynku'},
+ {name:'Dworzec kolejowy Skierniewice',type:'zabytek techniki',lat:51.9597,lon:20.1480,info:'ważny punkt historyczny miasta'},
+ {name:'Bolimowski Park Krajobrazowy',type:'przyroda',lat:52.0300,lon:20.1700,info:'lasy i spokojne drogi rowerowe'},
+ {name:'Puszcza Mariańska',type:'miejscowość / historia',lat:51.9797,lon:20.3505,info:'punkt orientacyjny i dobry kierunek tras'},
+ {name:'Bartniki',type:'miejscowość',lat:52.0479,lon:20.3307,info:'punkt na trasach w stronę Puszczy Mariańskiej'},
+ {name:'Jeżów — centrum historyczne',type:'zabytek / historia',lat:51.8135,lon:19.9685,info:'stara miejscowość na trasach do Skierniewic'},
+ {name:'Wolbórz — centrum',type:'zabytek / architektura',lat:51.5016,lon:19.8309,info:'ciekawy kierunek dłuższych tras'},
+ {name:'Cmentarz wojenny okolice Rawy Mazowieckiej',type:'cmentarz wojenny',lat:51.7700,lon:20.2500,info:'do weryfikacji na miejscu / Mapy.cz'},
+ {name:'Gzów',type:'miejscowość / lokalna historia',lat:51.8959,lon:20.0122,info:'punkt pośredni na spokojnych trasach'}
+];
+function setStatus(t,cls='ok'){const s=$('status');s.textContent=t;s.className='status '+cls}
+function init(){map=L.map('map',{preferCanvas:true}).setView([51.90,20.10],10);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);allLayer=L.layerGroup().addTo(map);selLayer=L.layerGroup().addTo(map);planLayer=L.layerGroup().addTo(map);attLayer=L.layerGroup().addTo(map);bind();loadData();}
+function bind(){ $('btnAll').onclick=showAll;$('btnClear').onclick=clearMap;$('btnLoc').onclick=loc;$('btnImport').onclick=importFiles;$('search').oninput=renderList;$('filter').onchange=renderList;$('btnPlan').onclick=makePlan;$('btnAddAtt').onclick=addAttractionsToPlan;$('btnMapy').onclick=openMapy;$('btnGpx').onclick=downloadPlanGpx;$('btnNew').onclick=newPlan;}
+async function loadData(){try{const r=await fetch('routes_v80_simplified.json?v=80');if(r.ok){const j=await r.json();routes=j.routes||[];}}catch(e){} try{addedRoutes=JSON.parse(localStorage.getItem('adam_added_routes')||'[]')}catch(e){addedRoutes=[]} renderList();stats();setStatus('Gotowe. Wczytano '+(routes.length+addedRoutes.length)+' tras.');}
+function allRoutes(){return routes.concat(addedRoutes)}
+function distClass(d){if(d<=50)return'krótka'; if(d<=100)return'średnia'; return'długa'}
+function renderList(){let q=($('search').value||'').toLowerCase(),f=$('filter').value;let data=allRoutes().filter(r=>(!q||(r.name||'').toLowerCase().includes(q)));if(f==='50')data=data.filter(r=>r.distanceKm<=50);if(f==='100')data=data.filter(r=>r.distanceKm>50&&r.distanceKm<=100);if(f==='101')data=data.filter(r=>r.distanceKm>100);$('list').innerHTML=data.slice(0,200).map((r,i)=>`<div class="route"><b>${escapeHtml(r.name)}</b><div class="meta">${r.distanceKm||'?'} km • punkty uproszczone: ${(r.points||[]).length} • oryginalne: ${r.pointsOriginal||'?'}</div><div class="row"><button onclick="showRoute(${allRoutes().indexOf(r)})">Pokaż na mapie</button><button class="secondary" onclick="downloadRoute(${allRoutes().indexOf(r)})">Pobierz GPX</button></div></div>`).join('')||'<p>Brak tras.</p>'}
+function showAll(){allLayer.clearLayers();let bounds=[];for(const r of allRoutes()){if(!r.points||r.points.length<2)continue;const line=L.polyline(r.points,{weight:1,opacity:.35,color:'#0b7a3b'}).addTo(allLayer);bounds.push(...r.points)} if(bounds.length)map.fitBounds(bounds,{padding:[20,20]});setStatus('Pokazano wszystkie trasy: '+allRoutes().length)}
+function showRoute(idx){selLayer.clearLayers();const r=allRoutes()[idx];if(!r||!r.points){setStatus('Nie znaleziono trasy','err');return}const line=L.polyline(r.points,{weight:5,opacity:.9,color:'#d71920'}).addTo(selLayer);L.marker(r.points[0]).addTo(selLayer).bindPopup('Start: '+r.name);L.marker(r.points[r.points.length-1]).addTo(selLayer).bindPopup('Meta: '+r.name);map.fitBounds(line.getBounds(),{padding:[25,25]});setStatus('Pokazano: '+r.name)}
+function clearMap(){allLayer.clearLayers();selLayer.clearLayers();planLayer.clearLayers();attLayer.clearLayers();setStatus('Mapa wyczyszczona')}
+function loc(){if(!navigator.geolocation){setStatus('Brak GPS w przeglądarce','err');return}navigator.geolocation.getCurrentPosition(p=>{const ll=[p.coords.latitude,p.coords.longitude];if(locMarker)map.removeLayer(locMarker);locMarker=L.marker(ll).addTo(map).bindPopup('Tu jesteś').openPopup();map.setView(ll,14);setStatus('Pokazano Twoją pozycję')},e=>setStatus('Nie udostępniono lokalizacji','err'),{enableHighAccuracy:true,timeout:10000})}
+function parseGpxText(text, filename){let tracks=[];let chunks=text.split(/<trk[\s>]/i);if(chunks.length<=1)chunks=[text];for(let c=1;c<chunks.length;c++){let chunk='<trk '+chunks[c];let nm=(chunk.match(/<name>([^<]+)<\/name>/i)||[])[1]||filename.replace(/\.gpx$/i,'')+' '+c;let pts=[];let re=/<trkpt\b[^>]*lat=["']([-\d.]+)["'][^>]*lon=["']([-\d.]+)["'][^>]*>/gi,m;while((m=re.exec(chunk)))pts.push([+m[1],+m[2]]);if(!pts.length){let re2=/<trkpt\b[^>]*lon=["']([-\d.]+)["'][^>]*lat=["']([-\d.]+)["'][^>]*>/gi;while((m=re2.exec(chunk)))pts.push([+m[2],+m[1]])}if(pts.length>1)tracks.push(makeRoute(nm,pts,filename));}
+ if(!tracks.length){let pts=[],re=/<trkpt\b[^>]*lat=["']([-\d.]+)["'][^>]*lon=["']([-\d.]+)["'][^>]*>/gi,m;while((m=re.exec(text)))pts.push([+m[1],+m[2]]); if(pts.length>1)tracks.push(makeRoute(filename.replace(/\.gpx$/i,''),pts,filename));}
+ return tracks;}
+function makeRoute(name, pts, file){return {id:Date.now()+Math.random(),name,source:file,points:simplify(pts,650),pointsOriginal:pts.length,distanceKm:+distance(pts).toFixed(1),start:pts[0],end:pts[pts.length-1]}}
+function simplify(pts,max){if(pts.length<=max)return pts;let out=[],step=(pts.length-1)/(max-1);for(let i=0;i<max;i++)out.push(pts[Math.round(i*step)]);return out}
+function distance(pts){let s=0;for(let i=1;i<pts.length;i++)s+=hav(pts[i-1],pts[i]);return s}
+function hav(a,b){const R=6371,la1=a[0]*Math.PI/180,la2=b[0]*Math.PI/180,dla=(b[0]-a[0])*Math.PI/180,dlo=(b[1]-a[1])*Math.PI/180;const x=Math.sin(dla/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dlo/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+async function importFiles(){const fs=[...$('gpxFile').files];if(!fs.length){setStatus('Wybierz plik GPX','err');return}showProg(5);let imported=0,skipped=0;const existing=new Set(allRoutes().map(r=>(r.source||r.name||'').toLowerCase()));for(let i=0;i<fs.length;i++){const f=fs[i];setStatus('Czytam GPX: '+f.name,'warnbox');showProg(10+i*80/fs.length);const text=await f.text();const trs=parseGpxText(text,f.name);for(const r of trs){const key=(r.source+'|'+r.name).toLowerCase();if(existing.has(r.source.toLowerCase())||existing.has(key)){skipped++;continue}addedRoutes.push(r);existing.add(key);imported++;}}
+ localStorage.setItem('adam_added_routes',JSON.stringify(addedRoutes));showProg(100);setTimeout(()=>hideProg(),800);renderList();stats();setStatus('Import zakończony. Dodano: '+imported+', pominięto: '+skipped);}
+function showProg(p){$('prog').classList.remove('hidden');$('bar').style.width=p+'%'}function hideProg(){$('prog').classList.add('hidden')}
+function stats(){const data=allRoutes();let total=data.reduce((a,r)=>a+(+r.distanceKm||0),0);let longest=data.slice().sort((a,b)=>(b.distanceKm||0)-(a.distanceKm||0))[0];$('stats').innerHTML=`<p><b>Tras:</b> ${data.length}</p><p><b>Łącznie:</b> ${total.toFixed(1)} km</p><p><b>Najdłuższa:</b> ${longest?escapeHtml(longest.name)+' — '+longest.distanceKm+' km':'brak'}</p><p class="mini">Miesięczne statystyki wymagają dat przejazdów w GPX. Jeśli plik zawiera daty, dodamy je w kolejnej wersji.</p>`}
+function norm(s){return (s||'').trim().toLowerCase().replace(/\s+/g,' ')}
+function geocode(q){q=norm(q);if(known[q])return {name:q,pt:known[q],exact:true};let k=Object.keys(known).find(x=>q.includes(x)||x.includes(q));if(k)return {name:k,pt:known[k],exact:false};return null}
+function getPlanInputs(){const start=$('start').value,end=$('end').value;const via=$('via').value.split(/\n|;/).map(x=>x.trim()).filter(Boolean);return [start,...via,end]}
+function makePlan(){planLayer.clearLayers();attLayer.clearLayers();planAtt=[];const names=getPlanInputs();let missing=[],pts=[];for(const n of names){const g=geocode(n);if(!g)missing.push(n);else pts.push({name:n,lat:g.pt[0],lon:g.pt[1],exact:g.exact})}if(missing.length){$('order').innerHTML='Nie rozpoznano punktów: '+missing.join(', ')+'\nDodaj je dokładniej, np. „Skierniewice, Konarskiego 1”.';setStatus('Nie rozpoznano części adresów','err');return}drawPlan(pts);}
+function drawPlan(items){planPts=items;const latlngs=items.map(p=>[p.lat,p.lon]);const line=L.polyline(latlngs,{color:'#d71920',weight:5,dashArray:'8 8'}).addTo(planLayer);items.forEach((p,i)=>L.marker([p.lat,p.lon]).addTo(planLayer).bindPopup((i+1)+'. '+p.name));map.fitBounds(line.getBounds(),{padding:[40,40]});$('order').innerHTML='Kolejność trasy:\n'+items.map((p,i)=>(i+1)+'. '+p.name+' ('+p.lat.toFixed(5)+', '+p.lon.toFixed(5)+')').join('\n')+'\n\nUwaga: to szkic po punktach. Dokładne prowadzenie po drogach otwórz w Mapy.cz.';setStatus('Narysowano szkic trasy na mapie.');}
+function addAttractionsToPlan(){if(!planPts.length){makePlan();if(!planPts.length)return}const linePts=planPts.map(p=>[p.lat,p.lon]);let chosen=attractions.map(a=>({...a,dist:minDistToLine([a.lat,a.lon],linePts)})).filter(a=>a.dist<12).sort((a,b)=>a.dist-b.dist).slice(0,8);planAtt=chosen.map(a=>({...a,on:true}));renderAtt();redrawPlanWithAtt();}
+function minDistToLine(p,pts){let m=1e9;for(const q of pts)m=Math.min(m,hav(p,q));return m}
+function renderAtt(){$('atts').innerHTML='<h3>Atrakcje dodane do trasy</h3>'+planAtt.map((a,i)=>`<div class="att ${a.on?'':'off'}"><b>${escapeHtml(a.name)}</b><br><span class="pill">${a.type}</span><span class="pill">${a.dist.toFixed(1)} km od szkicu</span><p>${escapeHtml(a.info)}</p><button onclick="toggleAtt(${i})">${a.on?'Usuń z trasy':'Przywróć'}</button></div>`).join('')}
+function toggleAtt(i){planAtt[i].on=!planAtt[i].on;renderAtt();redrawPlanWithAtt()}
+function redrawPlanWithAtt(){planLayer.clearLayers();attLayer.clearLayers();let items=[...planPts];let active=planAtt.filter(a=>a.on).map(a=>({name:a.name,lat:a.lat,lon:a.lon,att:true}));if(active.length&&items.length>=2)items=[items[0],...active,...items.slice(1)];const latlngs=items.map(p=>[p.lat,p.lon]);const line=L.polyline(latlngs,{color:'#d71920',weight:5,dashArray:'8 8'}).addTo(planLayer);items.forEach((p,i)=>L.marker([p.lat,p.lon]).addTo(p.att?attLayer:planLayer).bindPopup((i+1)+'. '+p.name));map.fitBounds(line.getBounds(),{padding:[40,40]});$('order').innerHTML='Kolejność z atrakcjami:\n'+items.map((p,i)=>(i+1)+'. '+p.name).join('\n');}
+function openMapy(){if(!planPts.length)makePlan();let items=[...planPts];let active=planAtt.filter(a=>a.on).map(a=>({name:a.name,lat:a.lat,lon:a.lon}));if(active.length&&items.length>=2)items=[items[0],...active,...items.slice(1)];if(items.length<2){setStatus('Najpierw utwórz szkic trasy','err');return}const start=items[0],end=items[items.length-1];const url='https://mapy.com/zakladni?x='+start.lon+'&y='+start.lat+'&z=11&source=coor&id='+start.lon+'%2C'+start.lat;window.open(url,'_blank');setStatus('Otworzyłem Mapy.cz. Punkty skopiuj z kolejności poniżej.');}
+function downloadPlanGpx(){if(!planPts.length)makePlan();let items=[...planPts];let active=planAtt.filter(a=>a.on).map(a=>({name:a.name,lat:a.lat,lon:a.lon}));if(active.length&&items.length>=2)items=[items[0],...active,...items.slice(1)];if(items.length<2)return;let g='<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Rowerowe Trasy Adama"><trk><name>Plan trasy</name><trkseg>'+items.map(p=>`<trkpt lat="${p.lat}" lon="${p.lon}"><name>${escapeXml(p.name)}</name></trkpt>`).join('')+'</trkseg></trk></gpx>';download('plan_trasy.gpx',g,'application/gpx+xml')}
+function downloadRoute(idx){const r=allRoutes()[idx];let g='<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Rowerowe Trasy Adama"><trk><name>'+escapeXml(r.name)+'</name><trkseg>'+r.points.map(p=>`<trkpt lat="${p[0]}" lon="${p[1]}"></trkpt>`).join('')+'</trkseg></trk></gpx>';download((r.name||'trasa').replace(/[^a-z0-9ąćęłńóśźż_-]+/gi,'_')+'.gpx',g,'application/gpx+xml')}
+function download(name,content,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function newPlan(){$('start').value='';$('via').value='';$('end').value='';$('order').innerHTML='';$('atts').innerHTML='';planPts=[];planAtt=[];planLayer.clearLayers();attLayer.clearLayers();setStatus('Wyczyszczono plan')}
+function escapeHtml(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}function escapeXml(s){return escapeHtml(s).replace(/"/g,'&quot;')}
+window.showRoute=showRoute;window.downloadRoute=downloadRoute;window.toggleAtt=toggleAtt;document.addEventListener('DOMContentLoaded',init);
 </script>
-</body>
-</html>
+</body></html>
