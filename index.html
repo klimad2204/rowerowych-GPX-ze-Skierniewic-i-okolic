@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-store">
-<title>Rowerowe Trasy Adama V8.2</title>
+<title>Rowerowe Trasy Adama V8.3</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--green:#0b7a3b;--green2:#2f7a58;--bg:#eef7f0;--text:#123;--muted:#667;--warn:#fff3df;--bad:#ffe6e8}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}#map{height:52vh;min-height:360px;border-bottom:6px solid var(--green)}.card{max-width:980px;margin:0 auto;padding:18px}.panel{background:#fff;border-radius:20px;margin:16px 0;padding:18px;box-shadow:0 6px 22px #0001;border:1px solid #dde8df}h1{font-size:clamp(32px,8vw,58px);line-height:1.05;margin:6px 0 14px}.version{display:inline-block;background:var(--green);color:#fff;border-radius:999px;padding:10px 16px;font-weight:800}.status{padding:14px;border-radius:14px;background:#e6f6eb;margin:12px 0;font-weight:700}.status.bad{background:var(--bad);color:#8a1620}.status.warn{background:var(--warn);color:#825000}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}button{border:0;border-radius:14px;padding:14px 15px;background:var(--green2);color:#fff;font-weight:800;font-size:16px;min-height:48px}button.secondary{background:#e8f3ec;color:#194c34}button.warn{background:#fff3df;color:#6d4300;border:1px solid #ebd3a8}button.danger{background:#9b1c1c}.row{display:flex;gap:8px;align-items:center;margin:8px 0}.row input{flex:1}.row button{min-width:50px}input,select,textarea{width:100%;border:1px solid #d2ddd5;border-radius:14px;padding:13px;font-size:16px;background:#fff}label{display:block;margin:12px 0 6px;font-weight:700}.hint{color:var(--muted);font-size:14px;line-height:1.45}.route-card{border:1px solid #e2e8e4;border-radius:16px;padding:12px;margin:10px 0;background:#fff}.route-card b{font-size:18px}.mini{font-size:13px;color:#667}.hidden{display:none}.badge{display:inline-block;border-radius:999px;background:#e8f3ec;color:#184b34;padding:5px 10px;margin:4px 4px 4px 0;font-weight:700}.leaflet-control-attribution{font-size:11px}.orderbox{background:#f7faf8;border:1px dashed #cfdcd3;border-radius:14px;padding:12px;margin-top:10px;white-space:pre-wrap}.badbox{background:var(--bad);color:#861b25;border-radius:14px;padding:12px;margin-top:10px}.okbox{background:#e7f7ed;color:#084d2a;border-radius:14px;padding:12px;margin-top:10px}.listItem{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #eef2ef;padding:8px 0}.listItem button{padding:8px 10px;min-height:36px;font-size:14px}a.btn{display:block;text-align:center;text-decoration:none;border-radius:14px;padding:14px;background:#0b7a3b;color:#fff;font-weight:900;margin:10px 0}@media(max-width:620px){#map{height:46vh}.grid{grid-template-columns:1fr}.card{padding:12px}.panel{border-radius:18px;padding:14px}}
@@ -14,7 +14,7 @@
 <div id="map"></div>
 <main class="card">
 <h1>🚴‍♂️ Rowerowe Trasy Adama</h1>
-<p><span class="version">V8.2 — adresy + Mapy.com</span></p>
+<p><span class="version">V8.3 — adresy + Mapy.com rower</span></p>
 <div id="status" class="status">Ładowanie aplikacji...</div>
 <div class="grid">
 <button id="btnAll">🗺️ Pokaż wszystkie trasy</button>
@@ -96,7 +96,7 @@ async function makePlan(openMapy=false){try{planOut.innerHTML='<div class="okbox
 catch(e){planOut.innerHTML=`<div class="badbox">${e.message}</div>`}}
 function mapyLink(pts){ // Mapy.com / Mapy.cz route format; coordinates lon,lat
  const start=`${pts[0].lon},${pts[0].lat}`;const end=`${pts[pts.length-1].lon},${pts[pts.length-1].lat}`;const via=pts.slice(1,-1).map(p=>`${p.lon},${p.lat}`).join(';');
- let url=`https://mapy.com/fnc/v1/route?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&routeType=bike`;
+ let url=`https://mapy.com/fnc/v1/route?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&routeType=bike_road`;
  if(via)url+=`&waypoints=${encodeURIComponent(via)}`;
  return url}
 function readText(file){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=()=>rej(fr.error);fr.readAsText(file)})}
