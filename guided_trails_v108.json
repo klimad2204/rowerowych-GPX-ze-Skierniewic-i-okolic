@@ -1,0 +1,364 @@
+[
+  {
+    "id": "guide_reymont_56",
+    "name": "Śladami Reymonta — wariant BPK/Skierniewice",
+    "color": "#dc2626",
+    "colorName": "czerwony",
+    "distanceKm": 56.8,
+    "desc": "Skierniewice – Lipce Reymontowskie – Rogów – Słupia – Godzianów – Skierniewice. Szlak z przewodników parkowych, związany z Władysławem Reymontem.",
+    "source": "Parki Krajobrazowe Woj. Łódzkiego / przewodnik",
+    "coords": [
+      [
+        51.9596,
+        20.1584
+      ],
+      [
+        51.9476,
+        20.0522
+      ],
+      [
+        51.899,
+        19.944
+      ],
+      [
+        51.817,
+        19.886
+      ],
+      [
+        51.85,
+        19.97
+      ],
+      [
+        51.896,
+        20.035
+      ],
+      [
+        51.9596,
+        20.1584
+      ]
+    ]
+  },
+  {
+    "id": "guide_janislawicka",
+    "name": "Szlak Kultury Janisławickiej",
+    "color": "#16a34a",
+    "colorName": "zielony",
+    "distanceKm": 37,
+    "desc": "Janisławice – Lipce Reymontowskie – Godzianów – Maków – Skierniewice. Lokalny szlak kulturowy z przewodników BPK.",
+    "source": "Parki Krajobrazowe Woj. Łódzkiego / Skierniewice24",
+    "coords": [
+      [
+        51.872,
+        20.006
+      ],
+      [
+        51.899,
+        19.944
+      ],
+      [
+        51.896,
+        20.035
+      ],
+      [
+        51.9476,
+        20.0522
+      ],
+      [
+        51.9596,
+        20.1584
+      ]
+    ]
+  },
+  {
+    "id": "guide_grunwaldzki_region",
+    "name": "Szlak Grunwaldzki — odcinek regionalny",
+    "color": "#dc2626",
+    "colorName": "czerwony",
+    "distanceKm": 193,
+    "desc": "Sulejów – Wolbórz – Lubochnia – Żelechlinek – Głuchów – Wysokienice – Samice – Budy Grabskie – Bolimów. Historyczna trasa nawiązująca do przemarszu wojsk Jagiełły.",
+    "source": "lodzkie.pl / Skierniewice24 / przewodniki",
+    "coords": [
+      [
+        51.354,
+        19.884
+      ],
+      [
+        51.5019,
+        19.8305
+      ],
+      [
+        51.607,
+        20.053
+      ],
+      [
+        51.712,
+        20.034
+      ],
+      [
+        51.7792,
+        20.0758
+      ],
+      [
+        51.85,
+        20.09
+      ],
+      [
+        51.99,
+        20.23
+      ],
+      [
+        51.992,
+        20.292
+      ],
+      [
+        52.075,
+        20.164
+      ]
+    ]
+  },
+  {
+    "id": "guide_korabiewka",
+    "name": "Śladami rzeki Korabiewki",
+    "color": "#2563eb",
+    "colorName": "niebieski",
+    "distanceKm": 40,
+    "desc": "Mszczonów – Korabiewice – Olszanka – Puszcza Mariańska – Mszczonów. Szlak wodno-przyrodniczy opisany w przewodnikach regionalnych.",
+    "source": "Skierniewice24 / przewodniki",
+    "coords": [
+      [
+        51.974,
+        20.52
+      ],
+      [
+        51.985,
+        20.455
+      ],
+      [
+        51.96,
+        20.42
+      ],
+      [
+        51.9817,
+        20.3509
+      ],
+      [
+        51.974,
+        20.52
+      ]
+    ]
+  },
+  {
+    "id": "guide_stare_dworki",
+    "name": "Szlak Starych Dworków okolic Skierniewic",
+    "color": "#16a34a",
+    "colorName": "zielony",
+    "distanceKm": 55,
+    "desc": "Skierniewice PKP – Las Pamięcki – Rawiczów – Trzcianna – Stara Rawa – Lisna – Paplin – Wola Pękoszewska – Babilonka – Wilczynek – Puszcza Mariańska – Bartniki – Ruda – Skierniewice.",
+    "source": "przewodniki rowerowe / Dwór Hipolitów / blogi trasowe",
+    "coords": [
+      [
+        51.9619,
+        20.1477
+      ],
+      [
+        51.985,
+        20.25
+      ],
+      [
+        51.99,
+        20.09
+      ],
+      [
+        51.99,
+        20.18
+      ],
+      [
+        51.91,
+        20.25
+      ],
+      [
+        51.92,
+        20.31
+      ],
+      [
+        51.95,
+        20.345
+      ],
+      [
+        51.965,
+        20.39
+      ],
+      [
+        51.98,
+        20.42
+      ],
+      [
+        52.0,
+        20.38
+      ],
+      [
+        51.9817,
+        20.3509
+      ],
+      [
+        52.0019,
+        20.3069
+      ],
+      [
+        52.02,
+        20.21
+      ],
+      [
+        51.9596,
+        20.1584
+      ]
+    ]
+  },
+  {
+    "id": "guide_ksiazecy",
+    "name": "Szlak Książęcy: Łowicz – Arkadia – Nieborów",
+    "color": "#2563eb",
+    "colorName": "niebieski",
+    "distanceKm": 14,
+    "desc": "Krótki szlak krajoznawczy łączący Łowicz z Arkadią i Nieborowem.",
+    "source": "Parki Krajobrazowe Woj. Łódzkiego / przewodniki",
+    "coords": [
+      [
+        52.107,
+        19.945
+      ],
+      [
+        52.0644,
+        20.0814
+      ],
+      [
+        52.0787,
+        20.0498
+      ]
+    ]
+  },
+  {
+    "id": "guide_meandry_rawki",
+    "name": "Meandry Rawki",
+    "color": "#111827",
+    "colorName": "czarny",
+    "distanceKm": 7,
+    "desc": "Budy Grabskie – Samice. Krótki szlak przyrodniczy w dolinie Rawki.",
+    "source": "Parki Krajobrazowe Woj. Łódzkiego",
+    "coords": [
+      [
+        51.992,
+        20.292
+      ],
+      [
+        51.99,
+        20.23
+      ]
+    ]
+  },
+  {
+    "id": "guide_radziwillowski",
+    "name": "Szlak Radziwiłłowski",
+    "color": "#16a34a",
+    "colorName": "zielony",
+    "distanceKm": 16.26,
+    "desc": "Ruda – Bełchów – Dzierzgów – Bobrowniki – Arkadia. Szlak krajobrazowo-historyczny w rejonie Arkadii i Nieborowa.",
+    "source": "Parki Krajobrazowe Woj. Łódzkiego",
+    "coords": [
+      [
+        52.02,
+        20.21
+      ],
+      [
+        52.08,
+        20.12
+      ],
+      [
+        52.092,
+        20.094
+      ],
+      [
+        52.075,
+        20.075
+      ],
+      [
+        52.0644,
+        20.0814
+      ]
+    ]
+  },
+  {
+    "id": "guide_szable_bagnety",
+    "name": "Szable i bagnety",
+    "color": "#dc2626",
+    "colorName": "czerwony",
+    "distanceKm": 119,
+    "desc": "Długi szlak historyczny powiatu łowickiego, związany z powstaniami i wojnami; w przewodnikach opisywany jako ok. 119 km.",
+    "source": "Parki Krajobrazowe Woj. Łódzkiego / Traseo",
+    "coords": [
+      [
+        52.107,
+        19.945
+      ],
+      [
+        52.075,
+        20.164
+      ],
+      [
+        52.0644,
+        20.0814
+      ],
+      [
+        52.0787,
+        20.0498
+      ],
+      [
+        52.12,
+        19.88
+      ],
+      [
+        52.105,
+        19.65
+      ],
+      [
+        52.075,
+        20.164
+      ]
+    ]
+  },
+  {
+    "id": "guide_dwory_koscioly",
+    "name": "Dwory i Kościoły",
+    "color": "#16a34a",
+    "colorName": "zielony",
+    "distanceKm": 123,
+    "desc": "Długi szlak krajoznawczy wymieniany w przewodnikach BPK; do dalszego doprecyzowania po śladzie GPX lub mapie papierowej.",
+    "source": "Parki Krajobrazowe Woj. Łódzkiego",
+    "coords": [
+      [
+        51.9596,
+        20.1584
+      ],
+      [
+        52.0787,
+        20.0498
+      ],
+      [
+        52.107,
+        19.945
+      ],
+      [
+        52.0644,
+        20.0814
+      ],
+      [
+        51.9817,
+        20.3509
+      ],
+      [
+        51.9596,
+        20.1584
+      ]
+    ]
+  }
+]
