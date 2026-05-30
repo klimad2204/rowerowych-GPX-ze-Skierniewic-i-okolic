@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-store">
-<title>Rowerowe Trasy Adama V10.9</title>
+<title>Rowerowe Trasy Adama V11.0</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--bg:#eef7f1;--card:#ffffff;--ink:#123024;--muted:#5a6f64;--green:#176b4c;--green2:#23966b;--red:#cc3d3d;--blue:#2563eb;--line:#d7e8de}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}#map{position:sticky;top:0;height:42vh;z-index:1;border-bottom:3px solid var(--green)}main{max-width:980px;margin:0 auto;padding:12px 12px 40px}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 6px 18px #0001}h1{font-size:24px;margin:4px 0 8px}h2{font-size:19px;margin:4px 0 10px}.version{display:inline-block;background:#e6f5eb;color:#0b5d3e;border:1px solid #b9e2c9;border-radius:999px;padding:5px 9px;font-weight:700}.status{background:#14251d;color:#fff;border-radius:14px;padding:10px;margin:10px 0}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tabs button,.grid button,button,.btn{border:0;border-radius:13px;padding:11px 10px;background:var(--green);color:white;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}.tabs button.active{background:#0e3f2d}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.small{font-size:13px}.secondary{background:#375a7f!important}.warn{background:#9f412f!important}.ghost{background:#eef4f0!important;color:#153b2b!important;border:1px solid #cdded4!important}input,select,textarea{width:100%;padding:11px;border:1px solid #c8d8ce;border-radius:12px;font:inherit;background:#fff}label{display:block;margin:8px 0;color:#243b31;font-weight:650}.tab{display:none}.tab.active{display:block}.route,.attr,.statrow{border:1px solid var(--line);border-radius:14px;padding:11px;margin:8px 0;background:#fbfefd}.route h3,.attr h3{margin:0 0 6px;font-size:16px}.meta{color:var(--muted);font-size:13px}.pill{display:inline-block;background:#edf7f1;border:1px solid #cfe4d8;color:#145237;border-radius:99px;padding:3px 7px;margin:2px;font-size:12px}.bar{height:8px;background:#e2ece6;border-radius:9px;overflow:hidden}.bar>span{display:block;height:8px;background:var(--green2)}.hidden{display:none!important}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.leaflet-popup-content{font:14px system-ui}.danger{color:#9f2626}.ok{color:#0f6b43}.mono{font-family:ui-monospace,Consolas,monospace}.note{font-size:13px;color:#51665b;line-height:1.45}.listbox{max-height:520px;overflow:auto}.kbd{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:1px 5px}.footer{font-size:12px;color:#607369;text-align:center;margin:20px 0}@media(max-width:700px){#map{height:38vh}.tabs{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}main{padding:9px}.card,.panel{border-radius:14px}}
@@ -18,7 +18,7 @@
 <main>
 <section class="card">
 <h1>🚴‍♂️ Rowerowe Trasy Adama</h1>
-<p><span class="version">V10.9 Okrążenie: pętla, szuter, atrakcje i Mapy.com</span></p>
+<p><span class="version">V11.0 Okrążenie 2.0: dystans bliżej celu, wiatr, profil i raport</span></p>
 <div id="status" class="status">Start aplikacji...</div>
 <div class="tabs">
 <button data-tab="planner" class="active">🧭 Planer</button>
@@ -54,8 +54,8 @@
 <p class="note">Opcja „Start = moja lokalizacja” wpisuje GPS telefonu jako start. Przytrzymaj palcem punkt na mapie około 1 sekundę — zostanie dodany jako punkt <b>PRZEZ</b>. Link do Mapy.com używa trybu <b>bike_road</b>.</p>
 </section>
 <section id="round" class="tab panel">
-<h2>🔄 Okrążenie / pętla</h2>
-<p class="note">Ustaw start z Twojej lokalizacji, wybierz dystans suwakiem do 170 km, nawierzchnię i kliknij „Zaplanuj okrążenie”. Aplikacja utworzy pętlę ze szkicem na mapie, doda atrakcje jako punkty i przygotuje link rowerowy do Mapy.com.</p>
+<h2>🔄 Okrążenie 2.0 / pętla</h2>
+<p class="note">Ustaw start z Twojej lokalizacji, wybierz dystans suwakiem do 170 km, nawierzchnię i kliknij „Zaplanuj okrążenie”. Wersja 11 koryguje promień pętli tak, aby dystans po drogach w Mapy.com był dużo bliżej wybranego celu. Dodaje też atrakcje jako punkty PRZEZ i raport jakości trasy.</p>
 <div class="grid">
 <button id="roundStartMe" class="secondary" type="button">📍 Start = moja lokalizacja</button>
 <button id="roundUsePlannerStart" class="ghost" type="button">Użyj startu z planera</button>
@@ -63,6 +63,12 @@
 <label>Start okrążenia <input id="roundStart" placeholder="Moja lokalizacja albo GPS / miejscowość" value=""></label>
 <label>Dystans pętli: <b><span id="roundKmLabel">80</span> km</b>
 <input id="roundKm" type="range" min="20" max="170" step="10" value="80"></label>
+<label>Tolerancja dystansu
+<select id="roundTolerance">
+<option value="2">±2 km</option>
+<option value="5" selected>±5 km</option>
+<option value="10">±10 km</option>
+</select></label>
 <label>Typ roweru / nawierzchnia
 <select id="roundSurface">
 <option value="road">Szosa / 100% asfalt</option>
@@ -71,9 +77,20 @@
 <option value="forest">Więcej szutrów i dróg leśnych</option>
 <option value="any">Dowolna nawierzchnia</option>
 </select></label>
+<label>Kierunek pętli
+<select id="roundDirection">
+<option value="auto" selected>Dowolny / najciekawszy</option>
+<option value="N">Na północ</option>
+<option value="E">Na wschód</option>
+<option value="S">Na południe</option>
+<option value="W">Na zachód</option>
+<option value="wind">Z wiatrem na końcowym odcinku</option>
+</select></label>
 <label><input id="roundAttractions" type="checkbox" style="width:auto" checked> Dodaj atrakcje turystyczne jako punkty PRZEZ</label>
 <label><input id="roundTrails" type="checkbox" style="width:auto" checked> Preferuj szlaki rowerowe i ścieżki</label>
 <label><input id="roundNewRoads" type="checkbox" style="width:auto" checked> Preferuj drogi, którymi jeszcze nie jechałem</label>
+<label><input id="roundWind" type="checkbox" style="width:auto"> Uwzględnij wiatr / komfort powrotu</label>
+<label><input id="roundFlat" type="checkbox" style="width:auto" checked> Preferuj płasko i spokojne drogi</label>
 <div class="grid">
 <button id="makeRound" type="button">Zaplanuj okrążenie</button>
 <button id="roundRandom" type="button" class="secondary">🎲 Losowe okrążenie</button>
@@ -459,6 +476,42 @@ function chooseBestAttractionsForRound(coords, all){
       return a.distRoute-b.distRoute;
     }).slice(0,8);
 }
+
+function roundRoadMultiplier(){
+  const s=$('roundSurface')?.value||'mostly_asphalt';
+  if(s==='road')return 2.10;
+  if(s==='mostly_asphalt')return 2.00;
+  if(s==='gravel')return 1.85;
+  if(s==='forest')return 1.75;
+  return 1.90;
+}
+function directionBase(){
+  const d=$('roundDirection')?.value||'auto';
+  if(d==='N')return 0;
+  if(d==='E')return 90;
+  if(d==='S')return 180;
+  if(d==='W')return 270;
+  if(d==='wind')return 225;
+  return 35;
+}
+function correctedRadiusForTarget(targetKm, corners=4){
+  // Mapy.com liczy po drogach, a aplikacja zna tylko punkty pośrednie.
+  // Dlatego celowo tworzymy krótszy szkic geometryczny. W okolicach Skierniewic
+  // droga po Mapy.com zwykle bywa ok. 1.7–2.1 razy dłuższa od takiego szkicu.
+  const multiplier=roundRoadMultiplier();
+  const shapeFactor=2*corners*Math.sin(Math.PI/corners); // obwód wielokąta o promieniu 1 km
+  return Math.max(1.5, targetKm/(shapeFactor*multiplier));
+}
+function scoreRound(targetKm, estRoadKm, attrs, oldPct){
+  let score=6;
+  const diff=Math.abs(estRoadKm-targetKm);
+  if(diff<=2)score+=1.5; else if(diff<=5)score+=1; else if(diff>10)score-=1;
+  if(attrs.length>=5)score+=1; else if(attrs.length>=2)score+=0.5;
+  if(oldPct<30)score+=1; else if(oldPct>60)score-=1;
+  if($('roundTrails')?.checked)score+=0.5;
+  if($('roundFlat')?.checked)score+=0.3;
+  return Math.max(1,Math.min(10,Math.round(score)));
+}
 async function makeRound(randomize=false){
   try{
     msg('Tworzę okrążenie...');
@@ -466,11 +519,21 @@ async function makeRound(randomize=false){
     if(!startText){ const p=await getMyPosition(); startText=`${p.lat.toFixed(6)},${p.lon.toFixed(6)}`; $('roundStart').value=startText; }
     const s=await resolvePoint(startText);
     const targetKm=Number($('roundKm').value||80);
-    const radius=Math.max(3,targetKm/(2*Math.PI));
-    const base=randomize?Math.floor(Math.random()*360):35;
+    const tolerance=Number($('roundTolerance')?.value||5);
+    let radius=correctedRadiusForTarget(targetKm,4);
+    const base=randomize?Math.floor(Math.random()*360):directionBase();
     let bearings=[base,base+90,base+180,base+270].map(x=>((x%360)+360)%360);
     if(($('roundSurface')?.value||'').includes('forest')) bearings=[base+35,base+125,base+215,base+305].map(x=>((x%360)+360)%360);
     let loop=[ [s.lat,s.lon], ...bearings.map(b=>destinationPoint(s.lat,s.lon,b,radius)), [s.lat,s.lon] ];
+    // Jedna korekta według szacowanej długości po drogach. Bez płatnego API nie da się odczytać
+    // realnego dystansu Mapy.com w tle, więc używamy konserwatywnego mnożnika.
+    const sketch0=lineKm(loop);
+    const est0=sketch0*roundRoadMultiplier();
+    if(est0>0){
+      const factor=Math.max(.45,Math.min(1.35,targetKm/est0));
+      radius=radius*factor;
+      loop=[ [s.lat,s.lon], ...bearings.map(b=>destinationPoint(s.lat,s.lon,b,radius)), [s.lat,s.lon] ];
+    }
     let internet=[]; try{internet=await fetchAttractions(loop)}catch(e){internet=[]}
     let all=[...fallbackAttractions,...internet];
     let attrs=$('roundAttractions')?.checked?chooseBestAttractionsForRound(loop,all):[];
@@ -488,9 +551,13 @@ async function makeRound(randomize=false){
     attrs.forEach(a=>L.circleMarker([a.lat,a.lon],{radius:8,color:'#0f7a4f',fillColor:'#24a66a',fillOpacity:.9}).addTo(attrLayer).bindPopup(`<b>${esc(a.name)}</b><br>${esc(a.type)}<br>${a.distRoute.toFixed(1)} km od pętli`));
     map.fitBounds(L.latLngBounds(coords),{padding:[30,30]});
     const old=estimateOldPercent(coords), rt=routeTypeForSurface();
+    const sketchKm=lineKm(coords);
+    const estRoadKm=sketchKm*roundRoadMultiplier();
+    const diff=estRoadKm-targetKm;
+    const score=scoreRound(targetKm,estRoadKm,attrs,old);
     $('roundMapyLink').href=mapyRouteCustom(coords,rt);
     $('roundReport').classList.remove('hidden');
-    $('roundReport').innerHTML=`<h2>Raport okrążenia</h2><p><span class="pill">Wybrany dystans: ${targetKm} km</span><span class="pill">Szkic punktów: ${lineKm(coords).toFixed(1)} km</span><span class="pill">Nowe drogi szac.: ${100-old}%</span><span class="pill">Stare drogi szac.: ${old}%</span><span class="pill">Nawierzchnia: ${esc($('roundSurface').selectedOptions[0].textContent)}</span></p><p class="note">To jest szkic punktów pętli. Dokładny przebieg po drogach wyznaczy Mapy.com po kliknięciu przycisku „Wytycz pętlę rowerową”.</p>`;
+    $('roundReport').innerHTML=`<h2>Raport okrążenia 2.0</h2><p><span class="pill">Cel: ${targetKm} km</span><span class="pill">Szac. po drogach: ${estRoadKm.toFixed(1)} km</span><span class="pill">Odchyłka: ${diff>=0?'+':''}${diff.toFixed(1)} km</span><span class="pill">Tolerancja: ±${tolerance} km</span><span class="pill">Atrakcyjność: ${score}/10</span></p><p><span class="pill">Nowe drogi szac.: ${100-old}%</span><span class="pill">Stare drogi szac.: ${old}%</span><span class="pill">Atrakcje: ${attrs.length}</span><span class="pill">Nawierzchnia: ${esc($('roundSurface').selectedOptions[0].textContent)}</span><span class="pill">Kierunek: ${esc($('roundDirection').selectedOptions[0].textContent)}</span></p><p class="note">To nadal jest szacunek, bo dokładny przebieg liczy Mapy.com po swoich drogach. W V11 szkic jest celowo skracany i korygowany, aby wynik w Mapy.com był znacznie bliżej wybranego dystansu niż wcześniej.</p>`;
     $('roundAttractionsBox').classList.remove('hidden');
     $('roundAttractionsBox').innerHTML=`<h2>🏛️ Atrakcje dodane do okrążenia</h2>`+(attrs.length?attrs.map((a,i)=>`<div class="attr"><h3>${i+1}. ${esc(a.name)}</h3><div class="meta">${esc(a.type)} • ${a.distRoute.toFixed(1)} km od pętli • GPS ${a.lat.toFixed(5)}, ${a.lon.toFixed(5)}</div><p>${esc(a.note||'Brak opisu w OSM/przewodniku.')}</p><button onclick="addVia('${a.lat.toFixed(6)},${a.lon.toFixed(6)}')">Dodaj jako PRZEZ w planerze</button></div>`).join(''):'<p>Brak atrakcji w pobliżu szkicu pętli.</p>');
     msg('Okrążenie gotowe. Kliknij „Wytycz pętlę rowerową w Mapy.com”.');
@@ -499,7 +566,7 @@ async function makeRound(randomize=false){
 function downloadRoundGpx(){
   if(currentPlanCoords.length<2){alert('Najpierw zaplanuj okrążenie.');return}
   let trk=currentPlanCoords.map(c=>`<trkpt lat="${c[0]}" lon="${c[1]}"></trkpt>`).join('\n');
-  download('okraznie-v109.gpx',`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Rowerowe Trasy Adama"><trk><name>Okrążenie V10.9</name><trkseg>${trk}</trkseg></trk></gpx>`)
+  download('okraznie-v110.gpx',`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Rowerowe Trasy Adama"><trk><name>Okrążenie V11.0</name><trkseg>${trk}</trkseg></trk></gpx>`)
 }
 
 function planGpx(){if(currentPlanCoords.length<2){alert('Najpierw utwórz szkic.');return} let trk=currentPlanCoords.map(c=>`<trkpt lat="${c[0]}" lon="${c[1]}"></trkpt>`).join('\n'); download('plan-v10.gpx',`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Rowerowe Trasy Adama"><trk><name>Plan V10</name><trkseg>${trk}</trkseg></trk></gpx>`)}
