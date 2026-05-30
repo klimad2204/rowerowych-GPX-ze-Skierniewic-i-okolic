@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-store">
-<title>Rowerowe Trasy Adama V10.3</title>
+<title>Rowerowe Trasy Adama V10.4</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--bg:#eef7f1;--card:#ffffff;--ink:#123024;--muted:#5a6f64;--green:#176b4c;--green2:#23966b;--red:#cc3d3d;--blue:#2563eb;--line:#d7e8de}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}#map{position:sticky;top:0;height:42vh;z-index:1;border-bottom:3px solid var(--green)}main{max-width:980px;margin:0 auto;padding:12px 12px 40px}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 6px 18px #0001}h1{font-size:24px;margin:4px 0 8px}h2{font-size:19px;margin:4px 0 10px}.version{display:inline-block;background:#e6f5eb;color:#0b5d3e;border:1px solid #b9e2c9;border-radius:999px;padding:5px 9px;font-weight:700}.status{background:#14251d;color:#fff;border-radius:14px;padding:10px;margin:10px 0}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tabs button,.grid button,button,.btn{border:0;border-radius:13px;padding:11px 10px;background:var(--green);color:white;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}.tabs button.active{background:#0e3f2d}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.small{font-size:13px}.secondary{background:#375a7f!important}.warn{background:#9f412f!important}.ghost{background:#eef4f0!important;color:#153b2b!important;border:1px solid #cdded4!important}input,select,textarea{width:100%;padding:11px;border:1px solid #c8d8ce;border-radius:12px;font:inherit;background:#fff}label{display:block;margin:8px 0;color:#243b31;font-weight:650}.tab{display:none}.tab.active{display:block}.route,.attr,.statrow{border:1px solid var(--line);border-radius:14px;padding:11px;margin:8px 0;background:#fbfefd}.route h3,.attr h3{margin:0 0 6px;font-size:16px}.meta{color:var(--muted);font-size:13px}.pill{display:inline-block;background:#edf7f1;border:1px solid #cfe4d8;color:#145237;border-radius:99px;padding:3px 7px;margin:2px;font-size:12px}.bar{height:8px;background:#e2ece6;border-radius:9px;overflow:hidden}.bar>span{display:block;height:8px;background:var(--green2)}.hidden{display:none!important}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.leaflet-popup-content{font:14px system-ui}.danger{color:#9f2626}.ok{color:#0f6b43}.mono{font-family:ui-monospace,Consolas,monospace}.note{font-size:13px;color:#51665b;line-height:1.45}.listbox{max-height:520px;overflow:auto}.kbd{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:1px 5px}.footer{font-size:12px;color:#607369;text-align:center;margin:20px 0}@media(max-width:700px){#map{height:38vh}.tabs{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}main{padding:9px}.card,.panel{border-radius:14px}}
@@ -18,13 +18,14 @@
 <main>
 <section class="card">
 <h1>🚴‍♂️ Rowerowe Trasy Adama</h1>
-<p><span class="version">V10.2 przytrzymanie mapy: dodawanie punktu PRZEZ działa na Androidzie</span></p>
+<p><span class="version">V10.4 szlaki rowerowe: wybierz szlak i prowadź nim</span></p>
 <div id="status" class="status">Start aplikacji...</div>
 <div class="tabs">
 <button data-tab="planner" class="active">🧭 Planer</button>
 <button data-tab="routes">📋 Trasy</button>
 <button data-tab="stats">📊 Statystyki</button>
 <button data-tab="tools">⚙️ Narzędzia</button>
+<button data-tab="trails">🚵 Szlaki</button>
 </div>
 </section>
 <section id="planner" class="tab active panel">
@@ -35,6 +36,12 @@
 <button id="addVia" class="secondary">+ Dodaj punkt PRZEZ</button>
 <label>Meta <input id="end" value="Skierniewice, Konarskiego 1"></label>
 <label><input id="preferNew" type="checkbox" style="width:auto"> Preferuj atrakcje i punkty przy drogach, których jeszcze nie jechałem</label>
+<div class="panel" style="margin:10px 0;background:#f7fbf8">
+<h3>🚵 Planowanie po szlaku rowerowym</h3>
+<label>Wybierz szlak <select id="trailSelect"><option value="">Bez szlaku</option></select></label>
+<div class="grid"><button id="showTrail" type="button" class="secondary">Pokaż wybrany szlak</button><button id="planTrail" type="button">Prowadź wybranym szlakiem</button></div>
+<p class="note">Opcja dodaje punkty szlaku jako punkty PRZEZ i tworzy szkic: Start → początek szlaku → punkty szlaku → koniec szlaku → Meta. Mapy.com otworzy to w trybie rowerowym.</p>
+</div>
 <div class="grid">
 <button id="makePlan">Utwórz szkic + atrakcje</button>
 <button id="clearPlan" class="warn">Wyczyść plan</button>
@@ -55,6 +62,13 @@
 <h2>📊 Statystyki miesięczne</h2>
 <div id="statsBox">Ładowanie statystyk...</div>
 </section>
+
+<section id="trails" class="tab panel">
+<h2>🚵 Szlaki rowerowe</h2>
+<p class="note">Szlaki są osobną warstwą. Możesz wyświetlić szlak na mapie albo użyć go przy planowaniu jako gotowy przebieg po punktach pośrednich.</p>
+<div class="grid"><button id="showAllTrails" class="secondary">Pokaż wszystkie szlaki</button><button id="clearTrails" class="warn">Ukryj szlaki</button></div>
+<div id="trailsList" class="listbox"></div>
+</section>
 <section id="tools" class="tab panel">
 <h2>⚙️ Narzędzia</h2>
 <label>Dodaj pojedynczy GPX z telefonu <input id="gpxInput" type="file" accept=".gpx,application/gpx+xml" multiple></label>
@@ -62,12 +76,12 @@
 <p class="note">Duży plik zbiorczy 54 MB został już przetworzony do pliku <b>routes_v100_simplified.json</b>. Do telefonu najlepiej dodawać pojedyncze nowe GPX po jeździe.</p>
 <div id="toolsOut"></div>
 </section>
-<p class="footer">V10.1 — wybór właściwej miejscowości, gdy nazwy się powtarzają</p>
+<p class="footer">V10.4 — szlaki rowerowe jako osobna warstwa i tryb planowania</p>
 </main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 'use strict';
-const $=id=>document.getElementById(id); const statusEl=$('status'); let map, baseLayer, selectedLayer, planLayer, attrLayer, markersLayer;
+const $=id=>document.getElementById(id); const statusEl=$('status'); let map, baseLayer, selectedLayer, planLayer, attrLayer, markersLayer, trailLayer;
 let routes=[], imported=[], currentPlanCoords=[], currentAttractions=[];
 const knownRaw={
  'boguslawice 107b':[51.514645,19.834688,'Bogusławice 107B, gm. Wolbórz'], 'bogusławice 107b':[51.514645,19.834688,'Bogusławice 107B, gm. Wolbórz'],
@@ -91,6 +105,12 @@ const fallbackAttractions=[
  {name:'Spała – okolice Pilicy', type:'przyroda', lat:51.5378, lon:20.1393, note:'Leśne i nadrzeczne tereny wycieczkowe.', stars:4},
  {name:'Inowłódz – zamek i Pilica', type:'zamek', lat:51.5289, lon:20.2252, note:'Ruiny zamku i malownicze okolice Pilicy.', stars:5}
 ];
+const cyclingTrails=[
+ {id:'rawka', name:'Szlak Doliny Rawki', color:'#0f766e', desc:'Przyrodniczy wariant wzdłuż doliny Rawki i okolic Puszczy Mariańskiej.', coords:[[51.9596,20.1584],[51.9449,20.1617],[51.9817,20.3509],[52.0019,20.3069],[51.985,20.275],[52.0644,20.0814],[52.0787,20.0498]]},
+ {id:'grunwald', name:'Szlak Grunwaldzki / Jeżów – Głuchów', color:'#b45309', desc:'Historyczny kierunek przez Jeżów, Głuchów i okolice Skierniewic.', coords:[[51.9596,20.1584],[51.9476,20.0522],[51.8134,19.9683],[51.7792,20.0758],[51.7645,20.2549]]},
+ {id:'pilica', name:'Szlak Pilicy: Wolbórz – Spała – Inowłódz', color:'#2563eb', desc:'Wariant nadpilicki dla dłuższych tras rowerowych.', coords:[[51.514645,19.834688],[51.5019,19.8305],[51.5378,20.1393],[51.5289,20.2252],[51.7645,20.2549]]},
+ {id:'nieborow', name:'Szlak Pałace i Ogrody: Nieborów – Arkadia', color:'#7c3aed', desc:'Krótki wariant krajoznawczy przez najważniejsze zabytki okolic Nieborowa.', coords:[[51.9596,20.1584],[52.0644,20.0814],[52.0787,20.0498],[51.9476,20.0522],[51.9596,20.1584]]}
+];
 function msg(t){statusEl.textContent=t} function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function hav(a,b){const R=6371,dLat=(b[0]-a[0])*Math.PI/180,dLon=(b[1]-a[1])*Math.PI/180,la1=a[0]*Math.PI/180,la2=b[0]*Math.PI/180;const x=Math.sin(dLat/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.min(1,Math.sqrt(x)))}
 function lineKm(cs){let d=0;for(let i=1;i<cs.length;i++)d+=hav(cs[i-1],cs[i]);return d}
@@ -98,7 +118,7 @@ function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\
 function initMap(){
   map=L.map('map',{tap:false}).setView([51.9,20.1],9);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
-  baseLayer=L.layerGroup().addTo(map);selectedLayer=L.layerGroup().addTo(map);planLayer=L.layerGroup().addTo(map);attrLayer=L.layerGroup().addTo(map);markersLayer=L.layerGroup().addTo(map);
+  baseLayer=L.layerGroup().addTo(map);selectedLayer=L.layerGroup().addTo(map);planLayer=L.layerGroup().addTo(map);attrLayer=L.layerGroup().addTo(map);markersLayer=L.layerGroup().addTo(map);trailLayer=L.layerGroup().addTo(map);
   setupLongPressVia();
 }
 function addViaFromMap(latlng){
@@ -175,6 +195,46 @@ async function makePlan(){try{msg('Rozpoznaję punkty i szukam atrakcji...'); le
 function renderPlanReport(pts,coords,arr){let km=lineKm(coords), old=estimateOldPercent(coords); $('mapyLink').href=mapyRoute(coords); $('planReport').classList.remove('hidden'); $('planReport').innerHTML=`<h2>Raport planu</h2><p><b>Kolejność:</b><br>${pts.map((p,i)=>`${i+1}. ${esc(p.label)}`).join('<br>')}</p><p><span class="pill">Szkic: ${km.toFixed(1)} km po prostej między punktami</span><span class="pill">Szac. stare drogi: ${old}%</span><span class="pill">Szac. nowe drogi: ${100-old}%</span><span class="pill">Atrakcje: ${arr.length}</span></p>`; $('planAttractions').classList.remove('hidden'); $('planAttractions').innerHTML=`<h2>🏛️ Atrakcje po całej planowanej trasie</h2>`+(arr.length?arr.map((a,i)=>`<div class="attr"><h3>${i+1}. ${esc(a.name)}</h3><div class="meta">${esc(a.type)} • ${a.distRoute.toFixed(1)} km od trasy • ${a.visited.toFixed(1)} km od Twoich starych śladów</div><p>${esc(a.note||'Brak opisu w OSM. Sprawdź punkt przed jazdą.')}</p><div class="row"><button onclick="addVia('${a.lat.toFixed(6)},${a.lon.toFixed(6)}')">Dodaj jako PRZEZ</button><button class="ghost" onclick="map.setView([${a.lat},${a.lon}],14)">Pokaż na mapie</button></div></div>`).join(''):'<p>Brak atrakcji w bazie przy tej trasie.</p>')}
 function estimateOldPercent(coords){let hits=0; coords.forEach(c=>{if(visitedDistance(c)<1.5)hits++}); return Math.round(100*hits/Math.max(1,coords.length))}
 function mapyRoute(coords){if(!coords||coords.length<2)return '#'; let u=new URL('https://mapy.com/fnc/v1/route'); u.searchParams.set('mapset','outdoor'); u.searchParams.set('routeType','bike_road'); u.searchParams.set('start',`${coords[0][1]},${coords[0][0]}`); u.searchParams.set('end',`${coords[coords.length-1][1]},${coords[coords.length-1][0]}`); let inner=coords.slice(1,-1).slice(0,15).map(c=>`${c[1]},${c[0]}`).join(';'); if(inner)u.searchParams.set('waypoints',inner); return u.toString()}
+
+function renderTrails(){
+  const sel=$('trailSelect'); if(sel){sel.innerHTML='<option value="">Bez szlaku</option>'+cyclingTrails.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}
+  const box=$('trailsList'); if(box){box.innerHTML=cyclingTrails.map(t=>`<div class="route"><h3>${esc(t.name)}</h3><div class="meta">${esc(t.desc)} • ${lineKm(t.coords).toFixed(1)} km szkicu</div><div class="row"><button onclick="showTrailById('${t.id}')">Pokaż szlak</button><button class="secondary" onclick="useTrailById('${t.id}')">Prowadź tym szlakiem</button></div></div>`).join('')}
+}
+function showTrailById(id){
+  const t=cyclingTrails.find(x=>x.id===id); if(!t){alert('Wybierz szlak.');return}
+  trailLayer.clearLayers();
+  L.polyline(t.coords,{color:t.color||'#0f766e',weight:6,opacity:.85}).addTo(trailLayer).bindPopup(esc(t.name));
+  t.coords.forEach((c,i)=>{ if(i===0||i===t.coords.length-1||i%2===0) L.circleMarker(c,{radius:5,color:t.color||'#0f766e',fillColor:'#fff',fillOpacity:1}).addTo(trailLayer).bindPopup(`${esc(t.name)}<br>Punkt ${i+1}`) });
+  map.fitBounds(L.latLngBounds(t.coords),{padding:[30,30]});
+  msg('Pokazano szlak: '+t.name);
+}
+function showSelectedTrail(){const id=$('trailSelect').value; if(!id){alert('Najpierw wybierz szlak.');return} showTrailById(id)}
+function showAllTrails(){trailLayer.clearLayers(); cyclingTrails.forEach(t=>L.polyline(t.coords,{color:t.color||'#0f766e',weight:4,opacity:.75}).addTo(trailLayer).bindPopup(esc(t.name))); const all=cyclingTrails.flatMap(t=>t.coords); if(all.length)map.fitBounds(L.latLngBounds(all),{padding:[30,30]}); msg('Pokazano wszystkie szlaki rowerowe.');}
+function clearTrails(){trailLayer.clearLayers(); msg('Ukryto szlaki rowerowe.')}
+function useTrailById(id){ const sel=$('trailSelect'); if(sel)sel.value=id; planWithTrail(); }
+async function planWithTrail(){
+  try{
+    const id=$('trailSelect').value; const t=cyclingTrails.find(x=>x.id===id); if(!t){alert('Najpierw wybierz szlak.');return}
+    msg('Tworzę plan po szlaku: '+t.name);
+    const start=await resolvePoint($('start').value);
+    const end=await resolvePoint($('end').value);
+    const coords=[[start.lat,start.lon],...t.coords,[end.lat,end.lon]];
+    const pts=[{...start,label:'START: '+start.label},...t.coords.map((c,i)=>({lat:c[0],lon:c[1],label:`${t.name} — punkt szlaku ${i+1}`})),{...end,label:'META: '+end.label}];
+    currentPlanCoords=coords;
+    planLayer.clearLayers();markersLayer.clearLayers();attrLayer.clearLayers();
+    showTrailById(t.id);
+    L.polyline(coords,{color:'#e11d48',weight:5,dashArray:'8,8'}).addTo(planLayer);
+    pts.forEach((p,i)=>L.marker([p.lat,p.lon]).addTo(markersLayer).bindPopup(`${i===0?'START':i===pts.length-1?'META':'SZLAK / PRZEZ'}<br>${esc(p.label)}`));
+    map.fitBounds(L.latLngBounds(coords),{padding:[30,30]});
+    let internet=await fetchAttractions(coords); let all=[...fallbackAttractions,...internet];
+    let arr=all.map(a=>({...a,distRoute:distToRouteKm([a.lat,a.lon],coords),visited:visitedDistance([a.lat,a.lon])})).filter(a=>a.distRoute<=10).sort((a,b)=>a.distRoute-b.distRoute).slice(0,25);
+    currentAttractions=arr;
+    arr.forEach(a=>L.circleMarker([a.lat,a.lon],{radius:8,color:'#0f7a4f',fillColor:'#24a66a',fillOpacity:.9}).addTo(attrLayer).bindPopup(`<b>${esc(a.name)}</b><br>${esc(a.type)}<br>${a.distRoute.toFixed(1)} km od szlaku`));
+    renderPlanReport(pts,coords,arr);
+    msg(`Plan po szlaku gotowy: ${t.name}. Atrakcje: ${arr.length}.`);
+  }catch(e){msg(e.message);alert(e.message)}
+}
+
 function planGpx(){if(currentPlanCoords.length<2){alert('Najpierw utwórz szkic.');return} let trk=currentPlanCoords.map(c=>`<trkpt lat="${c[0]}" lon="${c[1]}"></trkpt>`).join('\n'); download('plan-v10.gpx',`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Rowerowe Trasy Adama"><trk><name>Plan V10</name><trkseg>${trk}</trkseg></trk></gpx>`)}
 function download(name,text){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function parseGpx(txt,name){let doc=new DOMParser().parseFromString(txt,'application/xml');let pts=[...doc.querySelectorAll('trkpt')].map(p=>[+p.getAttribute('lat'),+p.getAttribute('lon')]).filter(c=>isFinite(c[0])&&isFinite(c[1])); if(pts.length<2)throw new Error('Brak punktów trkpt'); let step=Math.max(1,Math.ceil(pts.length/900)); let simp=pts.filter((_,i)=>i%step===0); if(JSON.stringify(simp.at(-1))!==JSON.stringify(pts.at(-1)))simp.push(pts.at(-1)); return {id:'imp'+Date.now()+Math.random(),name:name.replace(/\.gpx$/i,''),date:new Date().toISOString().slice(0,10),month:new Date().toISOString().slice(0,7),distanceKm:+lineKm(pts).toFixed(1),points:pts.length,coords:simp}}
@@ -217,8 +277,8 @@ async function centerMyLocation(){
 async function importGpx(){let files=[...$('gpxInput').files]; if(!files.length){alert('Wybierz GPX.');return}let added=0;for(const f of files){try{let r=parseGpx(await f.text(),f.name); if(routes.some(x=>norm(x.name)===norm(r.name))){alert('Pominięto duplikat nazwy: '+r.name);continue} imported.push(r);routes.push(r);added++}catch(e){alert(f.name+': '+e.message)}}saveImported();renderRoutes();renderStats();$('toolsOut').innerHTML=`Dodano ${added} tras.`;msg('Import GPX zakończony.')}
 function backup(){download('kopie_importowanych_tras.json',JSON.stringify(imported,null,2))}
 function switchTab(id){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id)); setTimeout(()=>map.invalidateSize(),200)}
-function bind(){document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$('showAll').onclick=showAll;$('clearMap').onclick=clearMap;$('search').oninput=renderRoutes;$('distFilter').onchange=renderRoutes;$('addVia').onclick=()=>addVia();$('startMe').onclick=setStartMyLocation;$('centerMe').onclick=centerMyLocation;$('makePlan').onclick=makePlan;$('clearPlan').onclick=()=>{$('start').value='';$('end').value='';$('viaBox').innerHTML='';planLayer.clearLayers();markersLayer.clearLayers();attrLayer.clearLayers();$('planReport').classList.add('hidden');$('planAttractions').classList.add('hidden');msg('Plan wyczyszczony.')};$('downloadPlan').onclick=planGpx;$('importGpx').onclick=importGpx;$('backup').onclick=backup;}
-initMap();bind();loadRoutes();
+function bind(){document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$('showAll').onclick=showAll;$('clearMap').onclick=clearMap;$('search').oninput=renderRoutes;$('distFilter').onchange=renderRoutes;$('addVia').onclick=()=>addVia();$('startMe').onclick=setStartMyLocation;$('centerMe').onclick=centerMyLocation;$('makePlan').onclick=makePlan;$('clearPlan').onclick=()=>{$('start').value='';$('end').value='';$('viaBox').innerHTML='';planLayer.clearLayers();markersLayer.clearLayers();attrLayer.clearLayers();$('planReport').classList.add('hidden');$('planAttractions').classList.add('hidden');msg('Plan wyczyszczony.')};$('downloadPlan').onclick=planGpx;$('importGpx').onclick=importGpx;$('backup').onclick=backup; if($('showTrail'))$('showTrail').onclick=showSelectedTrail; if($('planTrail'))$('planTrail').onclick=planWithTrail; if($('showAllTrails'))$('showAllTrails').onclick=showAllTrails; if($('clearTrails'))$('clearTrails').onclick=clearTrails;}
+initMap();renderTrails();bind();loadRoutes();
 </script>
 </body>
 </html>
