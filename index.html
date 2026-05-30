@@ -4,10 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-store">
-<title>Rowerowe Trasy Adama V10.0</title>
+<title>Rowerowe Trasy Adama V10.1</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--bg:#eef7f1;--card:#ffffff;--ink:#123024;--muted:#5a6f64;--green:#176b4c;--green2:#23966b;--red:#cc3d3d;--blue:#2563eb;--line:#d7e8de}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}#map{position:sticky;top:0;height:42vh;z-index:1;border-bottom:3px solid var(--green)}main{max-width:980px;margin:0 auto;padding:12px 12px 40px}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 6px 18px #0001}h1{font-size:24px;margin:4px 0 8px}h2{font-size:19px;margin:4px 0 10px}.version{display:inline-block;background:#e6f5eb;color:#0b5d3e;border:1px solid #b9e2c9;border-radius:999px;padding:5px 9px;font-weight:700}.status{background:#14251d;color:#fff;border-radius:14px;padding:10px;margin:10px 0}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tabs button,.grid button,button,.btn{border:0;border-radius:13px;padding:11px 10px;background:var(--green);color:white;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}.tabs button.active{background:#0e3f2d}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.small{font-size:13px}.secondary{background:#375a7f!important}.warn{background:#9f412f!important}.ghost{background:#eef4f0!important;color:#153b2b!important;border:1px solid #cdded4!important}input,select,textarea{width:100%;padding:11px;border:1px solid #c8d8ce;border-radius:12px;font:inherit;background:#fff}label{display:block;margin:8px 0;color:#243b31;font-weight:650}.tab{display:none}.tab.active{display:block}.route,.attr,.statrow{border:1px solid var(--line);border-radius:14px;padding:11px;margin:8px 0;background:#fbfefd}.route h3,.attr h3{margin:0 0 6px;font-size:16px}.meta{color:var(--muted);font-size:13px}.pill{display:inline-block;background:#edf7f1;border:1px solid #cfe4d8;color:#145237;border-radius:99px;padding:3px 7px;margin:2px;font-size:12px}.bar{height:8px;background:#e2ece6;border-radius:9px;overflow:hidden}.bar>span{display:block;height:8px;background:var(--green2)}.hidden{display:none!important}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.leaflet-popup-content{font:14px system-ui}.danger{color:#9f2626}.ok{color:#0f6b43}.mono{font-family:ui-monospace,Consolas,monospace}.note{font-size:13px;color:#51665b;line-height:1.45}.listbox{max-height:520px;overflow:auto}.kbd{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:1px 5px}.footer{font-size:12px;color:#607369;text-align:center;margin:20px 0}@media(max-width:700px){#map{height:38vh}.tabs{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}main{padding:9px}.card,.panel{border-radius:14px}}
+
+.pickOverlay{position:fixed;inset:0;background:#0008;z-index:9999;display:flex;align-items:center;justify-content:center;padding:14px}.pickBox{background:#fff;border-radius:18px;max-width:720px;width:100%;max-height:85vh;overflow:auto;padding:16px;box-shadow:0 18px 50px #0005}.pickBox h2{margin-top:0}.pickItem{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:1px solid #d7e8de;border-radius:14px;background:#f7fbf8;color:#123024}.pickItem b{display:block}.pickItem small{display:block;color:#5a6f64;margin-top:4px}.pickCancel{background:#777!important}
 </style>
 </head>
 <body>
@@ -15,7 +17,7 @@
 <main>
 <section class="card">
 <h1>🚴‍♂️ Rowerowe Trasy Adama</h1>
-<p><span class="version">V10.0 stabilna: trasy + statystyki + atrakcje po całej trasie</span></p>
+<p><span class="version">V10.1 wybór miejscowości: trasy + statystyki + atrakcje po całej trasie</span></p>
 <div id="status" class="status">Start aplikacji...</div>
 <div class="tabs">
 <button data-tab="planner" class="active">🧭 Planer</button>
@@ -58,7 +60,7 @@
 <p class="note">Duży plik zbiorczy 54 MB został już przetworzony do pliku <b>routes_v100_simplified.json</b>. Do telefonu najlepiej dodawać pojedyncze nowe GPX po jeździe.</p>
 <div id="toolsOut"></div>
 </section>
-<p class="footer">V10.0 — jeden stabilny index.html + routes_v100_simplified.json</p>
+<p class="footer">V10.1 — wybór właściwej miejscowości, gdy nazwy się powtarzają</p>
 </main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -101,9 +103,25 @@ function monthName(m){if(m==='brak daty')return 'Brak daty'; const names=['stycz
 function showRoute(id){let r=routes.find(x=>String(x.id)===String(id)); if(!r)return; selectedLayer.clearLayers(); let latlngs=r.coords; L.polyline(latlngs,{color:'#d33',weight:5}).addTo(selectedLayer); map.fitBounds(L.latLngBounds(latlngs),{padding:[20,20]}); msg(`Pokazano trasę: ${r.name}`)}
 function showAll(){baseLayer.clearLayers(); routes.forEach(r=>L.polyline(r.coords,{color:'#2f80ed',weight:2,opacity:.35}).addTo(baseLayer)); if(routes.length)map.fitBounds(L.latLngBounds(routes.flatMap(r=>r.coords.slice(0,1).concat(r.coords.slice(-1)))),{padding:[20,20]}); msg('Pokazano wszystkie ślady.')}function clearMap(){baseLayer.clearLayers();selectedLayer.clearLayers();planLayer.clearLayers();attrLayer.clearLayers();markersLayer.clearLayers();msg('Mapa wyczyszczona.')}
 function addVia(val=''){let div=document.createElement('div');div.className='row via';div.innerHTML=`<input value="${esc(val)}" placeholder="Punkt przez albo GPS"><button class="ghost" type="button">▲</button><button class="ghost" type="button">▼</button><button class="warn" type="button">Usuń</button>`; const box=$('viaBox'); box.appendChild(div); const [up,down,del]=div.querySelectorAll('button'); up.onclick=()=>{if(div.previousElementSibling)box.insertBefore(div,div.previousElementSibling)}; down.onclick=()=>{if(div.nextElementSibling)box.insertBefore(div.nextElementSibling,div)}; del.onclick=()=>div.remove(); if(val)msg('Dodano punkt PRZEZ z mapy.')} 
+function choosePlace(title,items){return new Promise((resolve,reject)=>{
+ const overlay=document.createElement('div'); overlay.className='pickOverlay';
+ overlay.innerHTML=`<div class="pickBox"><h2>Wybierz właściwe miejsce</h2><p class="note">Wpis: <b>${esc(title)}</b>. Nazwa może występować w kilku miejscach, więc wybierz właściwy punkt.</p><div id="pickList"></div><div class="row"><button class="pickCancel">Anuluj</button></div></div>`;
+ document.body.appendChild(overlay); const list=overlay.querySelector('#pickList');
+ items.forEach((it,i)=>{const b=document.createElement('button'); b.className='pickItem'; b.innerHTML=`<b>${esc(it.label||it.display_name||it.name||'Miejsce')}</b><small>GPS: ${(+it.lat).toFixed(6)}, ${(+it.lon).toFixed(6)}</small><small>${esc(it.type||it.category||'')}</small>`; b.onclick=()=>{overlay.remove();resolve({lat:+it.lat,lon:+it.lon,label:it.label||it.display_name||it.name});}; list.appendChild(b);});
+ overlay.querySelector('.pickCancel').onclick=()=>{overlay.remove();reject(new Error('Anulowano wybór miejsca.'))};
+ });}
+function localCandidates(text){const q=norm(text); if(!q)return []; let out=[]; for(const [k,p] of Object.entries(knownRaw)){ if(k===q || k.includes(q) || q.includes(k)){out.push({lat:p[0],lon:p[1],label:p[2],type:'punkt zapisany w aplikacji'});} }
+ const seen=new Set(); return out.filter(x=>{let id=x.lat+','+x.lon+','+x.label; if(seen.has(id))return false; seen.add(id); return true;}).slice(0,10);}
 async function resolvePoint(text){text=String(text||'').trim(); if(!text)throw new Error('Pusty punkt'); let m=text.match(/^\s*(-?\d+(?:\.\d+)?)\s*[,; ]\s*(-?\d+(?:\.\d+)?)\s*$/); if(m){let a=+m[1],b=+m[2]; if(Math.abs(a)<=90&&Math.abs(b)<=180)return {lat:a,lon:b,label:`GPS ${a}, ${b}`};}
  let key=norm(text); if(knownRaw[key]){let p=knownRaw[key];return {lat:p[0],lon:p[1],label:p[2]}}
- let url='https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=pl&q='+encodeURIComponent(text+', łódzkie, Polska'); let res=await fetch(url,{headers:{'Accept':'application/json'}}); let data=await res.json(); if(data&&data[0])return {lat:+data[0].lat,lon:+data[0].lon,label:data[0].display_name}; throw new Error('Nie rozpoznano punktu: '+text)}
+ let locals=localCandidates(text); if(locals.length>1)return await choosePlace(text,locals); if(locals.length===1 && key.length>3)return locals[0];
+ let url='https://nominatim.openstreetmap.org/search?format=json&limit=8&countrycodes=pl&addressdetails=1&q='+encodeURIComponent(text+', Polska');
+ let res=await fetch(url,{headers:{'Accept':'application/json'}}); let data=await res.json();
+ let results=(data||[]).map(d=>({lat:+d.lat,lon:+d.lon,label:d.display_name,type:[d.type,d.class].filter(Boolean).join(' / ')})).filter(d=>isFinite(d.lat)&&isFinite(d.lon));
+ // Najpierw pokaż wyniki z woj. łódzkiego i okolic, ale nie ukrywaj innych, gdy nazwa jest powtarzalna.
+ results.sort((a,b)=>{const aa=/łódzk|lodz|skierniewic|piotrkow|rawa|łowicz|tomasz/i.test(a.label)?0:1; const bb=/łódzk|lodz|skierniewic|piotrkow|rawa|łowicz|tomasz/i.test(b.label)?0:1; return aa-bb;});
+ if(results.length>1)return await choosePlace(text,results);
+ if(results.length===1)return results[0]; throw new Error('Nie rozpoznano punktu: '+text)}
 function distPointToSegmentKm(p,a,b){const A=hav(a,p),B=hav(p,b),C=hav(a,b); if(C===0)return A; const s=(A+B+C)/2; const area=Math.max(0,Math.sqrt(Math.max(0,s*(s-A)*(s-B)*(s-C)))); const h=2*area/C; return Math.min(h,A,B)}
 function distToRouteKm(p,coords){let best=9999;for(let i=1;i<coords.length;i++)best=Math.min(best,distPointToSegmentKm(p,coords[i-1],coords[i]));return best}
 function visitedDistance(p){let best=9999; for(const r of routes){ for(let i=0;i<r.coords.length;i+=Math.max(1,Math.floor(r.coords.length/80))) best=Math.min(best,hav(p,r.coords[i])); } return best}
