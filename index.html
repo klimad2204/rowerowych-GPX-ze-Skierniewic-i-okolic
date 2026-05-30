@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-store">
-<title>Rowerowe Trasy Adama V10.4</title>
+<title>Rowerowe Trasy Adama V10.5</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--bg:#eef7f1;--card:#ffffff;--ink:#123024;--muted:#5a6f64;--green:#176b4c;--green2:#23966b;--red:#cc3d3d;--blue:#2563eb;--line:#d7e8de}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}#map{position:sticky;top:0;height:42vh;z-index:1;border-bottom:3px solid var(--green)}main{max-width:980px;margin:0 auto;padding:12px 12px 40px}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 6px 18px #0001}h1{font-size:24px;margin:4px 0 8px}h2{font-size:19px;margin:4px 0 10px}.version{display:inline-block;background:#e6f5eb;color:#0b5d3e;border:1px solid #b9e2c9;border-radius:999px;padding:5px 9px;font-weight:700}.status{background:#14251d;color:#fff;border-radius:14px;padding:10px;margin:10px 0}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tabs button,.grid button,button,.btn{border:0;border-radius:13px;padding:11px 10px;background:var(--green);color:white;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}.tabs button.active{background:#0e3f2d}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.small{font-size:13px}.secondary{background:#375a7f!important}.warn{background:#9f412f!important}.ghost{background:#eef4f0!important;color:#153b2b!important;border:1px solid #cdded4!important}input,select,textarea{width:100%;padding:11px;border:1px solid #c8d8ce;border-radius:12px;font:inherit;background:#fff}label{display:block;margin:8px 0;color:#243b31;font-weight:650}.tab{display:none}.tab.active{display:block}.route,.attr,.statrow{border:1px solid var(--line);border-radius:14px;padding:11px;margin:8px 0;background:#fbfefd}.route h3,.attr h3{margin:0 0 6px;font-size:16px}.meta{color:var(--muted);font-size:13px}.pill{display:inline-block;background:#edf7f1;border:1px solid #cfe4d8;color:#145237;border-radius:99px;padding:3px 7px;margin:2px;font-size:12px}.bar{height:8px;background:#e2ece6;border-radius:9px;overflow:hidden}.bar>span{display:block;height:8px;background:var(--green2)}.hidden{display:none!important}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.leaflet-popup-content{font:14px system-ui}.danger{color:#9f2626}.ok{color:#0f6b43}.mono{font-family:ui-monospace,Consolas,monospace}.note{font-size:13px;color:#51665b;line-height:1.45}.listbox{max-height:520px;overflow:auto}.kbd{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:1px 5px}.footer{font-size:12px;color:#607369;text-align:center;margin:20px 0}@media(max-width:700px){#map{height:38vh}.tabs{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}main{padding:9px}.card,.panel{border-radius:14px}}
@@ -18,7 +18,7 @@
 <main>
 <section class="card">
 <h1>🚴‍♂️ Rowerowe Trasy Adama</h1>
-<p><span class="version">V10.4 szlaki rowerowe: wybierz szlak i prowadź nim</span></p>
+<p><span class="version">V10.5 szlaki z internetu OSM/Overpass + wybierz szlak i prowadź nim</span></p>
 <div id="status" class="status">Start aplikacji...</div>
 <div class="tabs">
 <button data-tab="planner" class="active">🧭 Planer</button>
@@ -66,7 +66,8 @@
 <section id="trails" class="tab panel">
 <h2>🚵 Szlaki rowerowe</h2>
 <p class="note">Szlaki są osobną warstwą. Możesz wyświetlić szlak na mapie albo użyć go przy planowaniu jako gotowy przebieg po punktach pośrednich.</p>
-<div class="grid"><button id="showAllTrails" class="secondary">Pokaż wszystkie szlaki</button><button id="clearTrails" class="warn">Ukryj szlaki</button></div>
+<div class="grid"><button id="fetchTrailsOnline">🌐 Pobierz szlaki z internetu</button><button id="showAllTrails" class="secondary">Pokaż wszystkie szlaki</button><button id="clearTrails" class="warn">Ukryj szlaki</button><button id="saveTrails" class="ghost">💾 Zapisz pobrane szlaki</button></div>
+<p class="note">Pobieranie działa dla aktualnie widocznego obszaru mapy. Najpierw ustaw mapę na interesujący teren, potem kliknij <b>Pobierz szlaki z internetu</b>. Źródło: OpenStreetMap / Overpass, tagi route=bicycle.</p>
 <div id="trailsList" class="listbox"></div>
 </section>
 <section id="tools" class="tab panel">
@@ -76,7 +77,7 @@
 <p class="note">Duży plik zbiorczy 54 MB został już przetworzony do pliku <b>routes_v100_simplified.json</b>. Do telefonu najlepiej dodawać pojedyncze nowe GPX po jeździe.</p>
 <div id="toolsOut"></div>
 </section>
-<p class="footer">V10.4 — szlaki rowerowe jako osobna warstwa i tryb planowania</p>
+<p class="footer">V10.5 — szlaki rowerowe z internetu OSM/Overpass + tryb planowania</p>
 </main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -196,9 +197,86 @@ function renderPlanReport(pts,coords,arr){let km=lineKm(coords), old=estimateOld
 function estimateOldPercent(coords){let hits=0; coords.forEach(c=>{if(visitedDistance(c)<1.5)hits++}); return Math.round(100*hits/Math.max(1,coords.length))}
 function mapyRoute(coords){if(!coords||coords.length<2)return '#'; let u=new URL('https://mapy.com/fnc/v1/route'); u.searchParams.set('mapset','outdoor'); u.searchParams.set('routeType','bike_road'); u.searchParams.set('start',`${coords[0][1]},${coords[0][0]}`); u.searchParams.set('end',`${coords[coords.length-1][1]},${coords[coords.length-1][0]}`); let inner=coords.slice(1,-1).slice(0,15).map(c=>`${c[1]},${c[0]}`).join(';'); if(inner)u.searchParams.set('waypoints',inner); return u.toString()}
 
+
+function simplifyCoords(coords,max=450){
+  if(!coords || coords.length<=max) return coords||[];
+  const step=Math.ceil(coords.length/max);
+  const out=coords.filter((_,i)=>i%step===0);
+  const last=coords[coords.length-1];
+  if(out.length && (out[out.length-1][0]!==last[0] || out[out.length-1][1]!==last[1])) out.push(last);
+  return out;
+}
+function loadSavedTrails(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('adam_saved_osm_trails')||'[]');
+    if(Array.isArray(saved)){
+      const ids=new Set(cyclingTrails.map(t=>t.id));
+      saved.forEach(t=>{ if(t&&t.id&&!ids.has(t.id)&&Array.isArray(t.coords)&&t.coords.length>1){ cyclingTrails.push(t); ids.add(t.id); }});
+    }
+  }catch(e){}
+}
+function saveTrailsLocal(){
+  const online=cyclingTrails.filter(t=>String(t.id).startsWith('osm_'));
+  localStorage.setItem('adam_saved_osm_trails',JSON.stringify(online));
+  msg('Zapisano pobrane szlaki w pamięci telefonu: '+online.length);
+  alert('Zapisano pobrane szlaki: '+online.length);
+}
+function trailNameFromTags(tags={},id=''){
+  return tags.name || tags.ref || tags.network || ('Szlak rowerowy OSM '+id);
+}
+function trailDescFromTags(tags={}){
+  const parts=[];
+  if(tags.ref) parts.push('ref: '+tags.ref);
+  if(tags.network) parts.push('sieć: '+tags.network);
+  if(tags.operator) parts.push('operator: '+tags.operator);
+  if(tags.description) parts.push(tags.description);
+  return parts.join(' • ') || 'Szlak rowerowy pobrany z OpenStreetMap.';
+}
+async function fetchTrailsOnline(){
+  try{
+    msg('Pobieram szlaki rowerowe z OpenStreetMap dla widocznej mapy...');
+    const b=map.getBounds();
+    const s=b.getSouth().toFixed(6), w=b.getWest().toFixed(6), n=b.getNorth().toFixed(6), e=b.getEast().toFixed(6);
+    const q=`[out:json][timeout:25];(
+      relation["type"="route"]["route"="bicycle"](${s},${w},${n},${e});
+      way["route"="bicycle"](${s},${w},${n},${e});
+      way["cycleway"](${s},${w},${n},${e});
+    );out tags geom 80;`;
+    const r=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:q});
+    if(!r.ok) throw new Error('Overpass nie odpowiedział: '+r.status);
+    const j=await r.json();
+    const ids=new Set(cyclingTrails.map(t=>t.id));
+    let added=0;
+    (j.elements||[]).forEach(el=>{
+      if(!el.geometry || el.geometry.length<2) return;
+      const id='osm_'+el.type+'_'+el.id;
+      if(ids.has(id)) return;
+      let coords=simplifyCoords(el.geometry.map(g=>[+g.lat,+g.lon]).filter(c=>isFinite(c[0])&&isFinite(c[1])),500);
+      if(coords.length<2 || lineKm(coords)<0.2) return;
+      cyclingTrails.push({
+        id,
+        name:trailNameFromTags(el.tags||{},el.id),
+        color:'#dc2626',
+        desc:trailDescFromTags(el.tags||{}),
+        source:'OpenStreetMap / Overpass',
+        coords
+      });
+      ids.add(id); added++;
+    });
+    renderTrails();
+    if(added) showAllTrails();
+    msg(`Pobrano ${added} nowych szlaków rowerowych z internetu. Łącznie w aplikacji: ${cyclingTrails.length}.`);
+    if(!added) alert('Nie znaleziono nowych szlaków w aktualnym widoku mapy. Przybliż/oddal mapę albo przesuń na inny obszar i spróbuj ponownie.');
+  }catch(e){
+    console.error(e);
+    msg('Nie udało się pobrać szlaków: '+e.message);
+    alert('Nie udało się pobrać szlaków z internetu. Spróbuj później albo zmień obszar mapy.\n\n'+e.message);
+  }
+}
+
 function renderTrails(){
   const sel=$('trailSelect'); if(sel){sel.innerHTML='<option value="">Bez szlaku</option>'+cyclingTrails.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}
-  const box=$('trailsList'); if(box){box.innerHTML=cyclingTrails.map(t=>`<div class="route"><h3>${esc(t.name)}</h3><div class="meta">${esc(t.desc)} • ${lineKm(t.coords).toFixed(1)} km szkicu</div><div class="row"><button onclick="showTrailById('${t.id}')">Pokaż szlak</button><button class="secondary" onclick="useTrailById('${t.id}')">Prowadź tym szlakiem</button></div></div>`).join('')}
+  const box=$('trailsList'); if(box){box.innerHTML=cyclingTrails.map(t=>`<div class="route"><h3>${esc(t.name)}</h3><div class="meta">${esc(t.desc)} • ${lineKm(t.coords).toFixed(1)} km szkicu${t.source?' • '+esc(t.source):''}</div><div class="row"><button onclick="showTrailById('${t.id}')">Pokaż szlak</button><button class="secondary" onclick="useTrailById('${t.id}')">Prowadź tym szlakiem</button></div></div>`).join('')}
 }
 function showTrailById(id){
   const t=cyclingTrails.find(x=>x.id===id); if(!t){alert('Wybierz szlak.');return}
@@ -277,8 +355,8 @@ async function centerMyLocation(){
 async function importGpx(){let files=[...$('gpxInput').files]; if(!files.length){alert('Wybierz GPX.');return}let added=0;for(const f of files){try{let r=parseGpx(await f.text(),f.name); if(routes.some(x=>norm(x.name)===norm(r.name))){alert('Pominięto duplikat nazwy: '+r.name);continue} imported.push(r);routes.push(r);added++}catch(e){alert(f.name+': '+e.message)}}saveImported();renderRoutes();renderStats();$('toolsOut').innerHTML=`Dodano ${added} tras.`;msg('Import GPX zakończony.')}
 function backup(){download('kopie_importowanych_tras.json',JSON.stringify(imported,null,2))}
 function switchTab(id){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id)); setTimeout(()=>map.invalidateSize(),200)}
-function bind(){document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$('showAll').onclick=showAll;$('clearMap').onclick=clearMap;$('search').oninput=renderRoutes;$('distFilter').onchange=renderRoutes;$('addVia').onclick=()=>addVia();$('startMe').onclick=setStartMyLocation;$('centerMe').onclick=centerMyLocation;$('makePlan').onclick=makePlan;$('clearPlan').onclick=()=>{$('start').value='';$('end').value='';$('viaBox').innerHTML='';planLayer.clearLayers();markersLayer.clearLayers();attrLayer.clearLayers();$('planReport').classList.add('hidden');$('planAttractions').classList.add('hidden');msg('Plan wyczyszczony.')};$('downloadPlan').onclick=planGpx;$('importGpx').onclick=importGpx;$('backup').onclick=backup; if($('showTrail'))$('showTrail').onclick=showSelectedTrail; if($('planTrail'))$('planTrail').onclick=planWithTrail; if($('showAllTrails'))$('showAllTrails').onclick=showAllTrails; if($('clearTrails'))$('clearTrails').onclick=clearTrails;}
-initMap();renderTrails();bind();loadRoutes();
+function bind(){document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$('showAll').onclick=showAll;$('clearMap').onclick=clearMap;$('search').oninput=renderRoutes;$('distFilter').onchange=renderRoutes;$('addVia').onclick=()=>addVia();$('startMe').onclick=setStartMyLocation;$('centerMe').onclick=centerMyLocation;$('makePlan').onclick=makePlan;$('clearPlan').onclick=()=>{$('start').value='';$('end').value='';$('viaBox').innerHTML='';planLayer.clearLayers();markersLayer.clearLayers();attrLayer.clearLayers();$('planReport').classList.add('hidden');$('planAttractions').classList.add('hidden');msg('Plan wyczyszczony.')};$('downloadPlan').onclick=planGpx;$('importGpx').onclick=importGpx;$('backup').onclick=backup; if($('showTrail'))$('showTrail').onclick=showSelectedTrail; if($('planTrail'))$('planTrail').onclick=planWithTrail; if($('showAllTrails'))$('showAllTrails').onclick=showAllTrails; if($('clearTrails'))$('clearTrails').onclick=clearTrails; if($('fetchTrailsOnline'))$('fetchTrailsOnline').onclick=fetchTrailsOnline; if($('saveTrails'))$('saveTrails').onclick=saveTrailsLocal;}
+initMap();loadSavedTrails();renderTrails();bind();loadRoutes();
 </script>
 </body>
 </html>
