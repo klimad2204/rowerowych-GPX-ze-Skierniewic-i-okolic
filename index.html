@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-store">
-<title>Rowerowe Trasy Adama V10.8</title>
+<title>Rowerowe Trasy Adama V10.9</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--bg:#eef7f1;--card:#ffffff;--ink:#123024;--muted:#5a6f64;--green:#176b4c;--green2:#23966b;--red:#cc3d3d;--blue:#2563eb;--line:#d7e8de}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}#map{position:sticky;top:0;height:42vh;z-index:1;border-bottom:3px solid var(--green)}main{max-width:980px;margin:0 auto;padding:12px 12px 40px}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 6px 18px #0001}h1{font-size:24px;margin:4px 0 8px}h2{font-size:19px;margin:4px 0 10px}.version{display:inline-block;background:#e6f5eb;color:#0b5d3e;border:1px solid #b9e2c9;border-radius:999px;padding:5px 9px;font-weight:700}.status{background:#14251d;color:#fff;border-radius:14px;padding:10px;margin:10px 0}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tabs button,.grid button,button,.btn{border:0;border-radius:13px;padding:11px 10px;background:var(--green);color:white;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}.tabs button.active{background:#0e3f2d}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.small{font-size:13px}.secondary{background:#375a7f!important}.warn{background:#9f412f!important}.ghost{background:#eef4f0!important;color:#153b2b!important;border:1px solid #cdded4!important}input,select,textarea{width:100%;padding:11px;border:1px solid #c8d8ce;border-radius:12px;font:inherit;background:#fff}label{display:block;margin:8px 0;color:#243b31;font-weight:650}.tab{display:none}.tab.active{display:block}.route,.attr,.statrow{border:1px solid var(--line);border-radius:14px;padding:11px;margin:8px 0;background:#fbfefd}.route h3,.attr h3{margin:0 0 6px;font-size:16px}.meta{color:var(--muted);font-size:13px}.pill{display:inline-block;background:#edf7f1;border:1px solid #cfe4d8;color:#145237;border-radius:99px;padding:3px 7px;margin:2px;font-size:12px}.bar{height:8px;background:#e2ece6;border-radius:9px;overflow:hidden}.bar>span{display:block;height:8px;background:var(--green2)}.hidden{display:none!important}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.leaflet-popup-content{font:14px system-ui}.danger{color:#9f2626}.ok{color:#0f6b43}.mono{font-family:ui-monospace,Consolas,monospace}.note{font-size:13px;color:#51665b;line-height:1.45}.listbox{max-height:520px;overflow:auto}.kbd{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:1px 5px}.footer{font-size:12px;color:#607369;text-align:center;margin:20px 0}@media(max-width:700px){#map{height:38vh}.tabs{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}main{padding:9px}.card,.panel{border-radius:14px}}
@@ -18,7 +18,7 @@
 <main>
 <section class="card">
 <h1>🚴‍♂️ Rowerowe Trasy Adama</h1>
-<p><span class="version">V10.8 szlaki z przewodników + OSM</span></p>
+<p><span class="version">V10.9 Okrążenie: pętla, szuter, atrakcje i Mapy.com</span></p>
 <div id="status" class="status">Start aplikacji...</div>
 <div class="tabs">
 <button data-tab="planner" class="active">🧭 Planer</button>
@@ -26,6 +26,7 @@
 <button data-tab="stats">📊 Statystyki</button>
 <button data-tab="tools">⚙️ Narzędzia</button>
 <button data-tab="trails">🚵 Szlaki</button>
+<button data-tab="round">🔄 Okrążenie</button>
 </div>
 </section>
 <section id="planner" class="tab active panel">
@@ -51,6 +52,36 @@
 <div id="planReport" class="panel hidden"></div>
 <div id="planAttractions" class="panel hidden"></div>
 <p class="note">Opcja „Start = moja lokalizacja” wpisuje GPS telefonu jako start. Przytrzymaj palcem punkt na mapie około 1 sekundę — zostanie dodany jako punkt <b>PRZEZ</b>. Link do Mapy.com używa trybu <b>bike_road</b>.</p>
+</section>
+<section id="round" class="tab panel">
+<h2>🔄 Okrążenie / pętla</h2>
+<p class="note">Ustaw start z Twojej lokalizacji, wybierz dystans suwakiem do 170 km, nawierzchnię i kliknij „Zaplanuj okrążenie”. Aplikacja utworzy pętlę ze szkicem na mapie, doda atrakcje jako punkty i przygotuje link rowerowy do Mapy.com.</p>
+<div class="grid">
+<button id="roundStartMe" class="secondary" type="button">📍 Start = moja lokalizacja</button>
+<button id="roundUsePlannerStart" class="ghost" type="button">Użyj startu z planera</button>
+</div>
+<label>Start okrążenia <input id="roundStart" placeholder="Moja lokalizacja albo GPS / miejscowość" value=""></label>
+<label>Dystans pętli: <b><span id="roundKmLabel">80</span> km</b>
+<input id="roundKm" type="range" min="20" max="170" step="10" value="80"></label>
+<label>Typ roweru / nawierzchnia
+<select id="roundSurface">
+<option value="road">Szosa / 100% asfalt</option>
+<option value="mostly_asphalt" selected>Głównie asfalt, szuter do 10–20%</option>
+<option value="gravel">Gravel: asfalt + szuter do 30–40%</option>
+<option value="forest">Więcej szutrów i dróg leśnych</option>
+<option value="any">Dowolna nawierzchnia</option>
+</select></label>
+<label><input id="roundAttractions" type="checkbox" style="width:auto" checked> Dodaj atrakcje turystyczne jako punkty PRZEZ</label>
+<label><input id="roundTrails" type="checkbox" style="width:auto" checked> Preferuj szlaki rowerowe i ścieżki</label>
+<label><input id="roundNewRoads" type="checkbox" style="width:auto" checked> Preferuj drogi, którymi jeszcze nie jechałem</label>
+<div class="grid">
+<button id="makeRound" type="button">Zaplanuj okrążenie</button>
+<button id="roundRandom" type="button" class="secondary">🎲 Losowe okrążenie</button>
+<a id="roundMapyLink" class="btn secondary" href="#" target="_blank" rel="noopener">Wytycz pętlę rowerową w Mapy.com</a>
+<button id="downloadRound" class="ghost" type="button">Pobierz GPX okrążenia</button>
+</div>
+<div id="roundReport" class="panel hidden"></div>
+<div id="roundAttractionsBox" class="panel hidden"></div>
 </section>
 <section id="routes" class="tab panel">
 <h2>📋 Lista tras GPX</h2>
@@ -390,6 +421,87 @@ async function planWithTrail(){
   }catch(e){msg(e.message);alert(e.message)}
 }
 
+
+function destinationPoint(lat,lon,bearing,distKm){
+  const R=6371, br=bearing*Math.PI/180, d=distKm/R, la1=lat*Math.PI/180, lo1=lon*Math.PI/180;
+  const la2=Math.asin(Math.sin(la1)*Math.cos(d)+Math.cos(la1)*Math.sin(d)*Math.cos(br));
+  const lo2=lo1+Math.atan2(Math.sin(br)*Math.sin(d)*Math.cos(la1),Math.cos(d)-Math.sin(la1)*Math.sin(la2));
+  return [la2*180/Math.PI, ((lo2*180/Math.PI+540)%360)-180];
+}
+function routeTypeForSurface(){
+  const s=$('roundSurface')?.value||'mostly_asphalt';
+  if(s==='road')return 'bike_road';
+  if(s==='gravel'||s==='forest'||s==='any')return 'bike_mountain';
+  return 'bike_road';
+}
+function mapyRouteCustom(coords,routeType='bike_road'){
+  if(!coords||coords.length<2)return '#';
+  let u=new URL('https://mapy.com/fnc/v1/route');
+  u.searchParams.set('mapset','outdoor');
+  u.searchParams.set('routeType',routeType);
+  u.searchParams.set('start',`${coords[0][1]},${coords[0][0]}`);
+  u.searchParams.set('end',`${coords[coords.length-1][1]},${coords[coords.length-1][0]}`);
+  let inner=coords.slice(1,-1).slice(0,15).map(c=>`${c[1]},${c[0]}`).join(';');
+  if(inner)u.searchParams.set('waypoints',inner);
+  return u.toString();
+}
+async function setRoundStartMyLocation(){
+  try{msg('Pobieram lokalizację do okrążenia...'); const p=await getMyPosition(); const val=`${p.lat.toFixed(6)},${p.lon.toFixed(6)}`; $('roundStart').value=val; L.marker([p.lat,p.lon]).addTo(markersLayer).bindPopup('Start okrążenia: moja lokalizacja<br>'+val).openPopup(); map.setView([p.lat,p.lon],13); msg('Start okrążenia ustawiony na Twoją lokalizację.');}
+  catch(e){msg(e.message);alert(e.message)}
+}
+function usePlannerStartForRound(){ $('roundStart').value=$('start').value||''; msg('Skopiowano start z planera do okrążenia.'); }
+function updateRoundSlider(){ if($('roundKmLabel')) $('roundKmLabel').textContent=$('roundKm').value; }
+function chooseBestAttractionsForRound(coords, all){
+  return all.map(a=>({...a,distRoute:distToRouteKm([a.lat,a.lon],coords),visited:visitedDistance([a.lat,a.lon])}))
+    .filter(a=>a.distRoute<=8)
+    .sort((a,b)=>{
+      if($('roundNewRoads')?.checked){ const nv=(b.visited-a.visited); if(Math.abs(nv)>0.2)return nv; }
+      return a.distRoute-b.distRoute;
+    }).slice(0,8);
+}
+async function makeRound(randomize=false){
+  try{
+    msg('Tworzę okrążenie...');
+    let startText=$('roundStart').value.trim();
+    if(!startText){ const p=await getMyPosition(); startText=`${p.lat.toFixed(6)},${p.lon.toFixed(6)}`; $('roundStart').value=startText; }
+    const s=await resolvePoint(startText);
+    const targetKm=Number($('roundKm').value||80);
+    const radius=Math.max(3,targetKm/(2*Math.PI));
+    const base=randomize?Math.floor(Math.random()*360):35;
+    let bearings=[base,base+90,base+180,base+270].map(x=>((x%360)+360)%360);
+    if(($('roundSurface')?.value||'').includes('forest')) bearings=[base+35,base+125,base+215,base+305].map(x=>((x%360)+360)%360);
+    let loop=[ [s.lat,s.lon], ...bearings.map(b=>destinationPoint(s.lat,s.lon,b,radius)), [s.lat,s.lon] ];
+    let internet=[]; try{internet=await fetchAttractions(loop)}catch(e){internet=[]}
+    let all=[...fallbackAttractions,...internet];
+    let attrs=$('roundAttractions')?.checked?chooseBestAttractionsForRound(loop,all):[];
+    // Wstaw atrakcje w miejsce najbliższego odcinka pętli, bez psucia startu i mety
+    let coords=[...loop];
+    attrs.forEach(a=>{
+      let bestIdx=1,best=9999;
+      for(let i=1;i<coords.length;i++){const d=distPointToSegmentKm([a.lat,a.lon],coords[i-1],coords[i]); if(d<best){best=d;bestIdx=i}}
+      coords.splice(bestIdx,0,[a.lat,a.lon]);
+    });
+    currentPlanCoords=coords;
+    planLayer.clearLayers();markersLayer.clearLayers();attrLayer.clearLayers();
+    L.polyline(coords,{color:'#f97316',weight:5,dashArray:'10,7'}).addTo(planLayer).bindPopup('Okrążenie '+targetKm+' km');
+    coords.forEach((c,i)=>{ if(i===0||i===coords.length-1) L.marker(c).addTo(markersLayer).bindPopup(i===0?'START okrążenia':'META okrążenia'); else L.circleMarker(c,{radius:6,color:'#f97316',fillColor:'#fff',fillOpacity:1}).addTo(markersLayer).bindPopup('Punkt PRZEZ okrążenia'); });
+    attrs.forEach(a=>L.circleMarker([a.lat,a.lon],{radius:8,color:'#0f7a4f',fillColor:'#24a66a',fillOpacity:.9}).addTo(attrLayer).bindPopup(`<b>${esc(a.name)}</b><br>${esc(a.type)}<br>${a.distRoute.toFixed(1)} km od pętli`));
+    map.fitBounds(L.latLngBounds(coords),{padding:[30,30]});
+    const old=estimateOldPercent(coords), rt=routeTypeForSurface();
+    $('roundMapyLink').href=mapyRouteCustom(coords,rt);
+    $('roundReport').classList.remove('hidden');
+    $('roundReport').innerHTML=`<h2>Raport okrążenia</h2><p><span class="pill">Wybrany dystans: ${targetKm} km</span><span class="pill">Szkic punktów: ${lineKm(coords).toFixed(1)} km</span><span class="pill">Nowe drogi szac.: ${100-old}%</span><span class="pill">Stare drogi szac.: ${old}%</span><span class="pill">Nawierzchnia: ${esc($('roundSurface').selectedOptions[0].textContent)}</span></p><p class="note">To jest szkic punktów pętli. Dokładny przebieg po drogach wyznaczy Mapy.com po kliknięciu przycisku „Wytycz pętlę rowerową”.</p>`;
+    $('roundAttractionsBox').classList.remove('hidden');
+    $('roundAttractionsBox').innerHTML=`<h2>🏛️ Atrakcje dodane do okrążenia</h2>`+(attrs.length?attrs.map((a,i)=>`<div class="attr"><h3>${i+1}. ${esc(a.name)}</h3><div class="meta">${esc(a.type)} • ${a.distRoute.toFixed(1)} km od pętli • GPS ${a.lat.toFixed(5)}, ${a.lon.toFixed(5)}</div><p>${esc(a.note||'Brak opisu w OSM/przewodniku.')}</p><button onclick="addVia('${a.lat.toFixed(6)},${a.lon.toFixed(6)}')">Dodaj jako PRZEZ w planerze</button></div>`).join(''):'<p>Brak atrakcji w pobliżu szkicu pętli.</p>');
+    msg('Okrążenie gotowe. Kliknij „Wytycz pętlę rowerową w Mapy.com”.');
+  }catch(e){msg(e.message);alert(e.message)}
+}
+function downloadRoundGpx(){
+  if(currentPlanCoords.length<2){alert('Najpierw zaplanuj okrążenie.');return}
+  let trk=currentPlanCoords.map(c=>`<trkpt lat="${c[0]}" lon="${c[1]}"></trkpt>`).join('\n');
+  download('okraznie-v109.gpx',`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Rowerowe Trasy Adama"><trk><name>Okrążenie V10.9</name><trkseg>${trk}</trkseg></trk></gpx>`)
+}
+
 function planGpx(){if(currentPlanCoords.length<2){alert('Najpierw utwórz szkic.');return} let trk=currentPlanCoords.map(c=>`<trkpt lat="${c[0]}" lon="${c[1]}"></trkpt>`).join('\n'); download('plan-v10.gpx',`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Rowerowe Trasy Adama"><trk><name>Plan V10</name><trkseg>${trk}</trkseg></trk></gpx>`)}
 function download(name,text){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function parseGpx(txt,name){let doc=new DOMParser().parseFromString(txt,'application/xml');let pts=[...doc.querySelectorAll('trkpt')].map(p=>[+p.getAttribute('lat'),+p.getAttribute('lon')]).filter(c=>isFinite(c[0])&&isFinite(c[1])); if(pts.length<2)throw new Error('Brak punktów trkpt'); let step=Math.max(1,Math.ceil(pts.length/900)); let simp=pts.filter((_,i)=>i%step===0); if(JSON.stringify(simp.at(-1))!==JSON.stringify(pts.at(-1)))simp.push(pts.at(-1)); return {id:'imp'+Date.now()+Math.random(),name:name.replace(/\.gpx$/i,''),date:new Date().toISOString().slice(0,10),month:new Date().toISOString().slice(0,7),distanceKm:+lineKm(pts).toFixed(1),points:pts.length,coords:simp}}
@@ -432,7 +544,7 @@ async function centerMyLocation(){
 async function importGpx(){let files=[...$('gpxInput').files]; if(!files.length){alert('Wybierz GPX.');return}let added=0;for(const f of files){try{let r=parseGpx(await f.text(),f.name); if(routes.some(x=>norm(x.name)===norm(r.name))){alert('Pominięto duplikat nazwy: '+r.name);continue} imported.push(r);routes.push(r);added++}catch(e){alert(f.name+': '+e.message)}}saveImported();renderRoutes();renderStats();$('toolsOut').innerHTML=`Dodano ${added} tras.`;msg('Import GPX zakończony.')}
 function backup(){download('kopie_importowanych_tras.json',JSON.stringify(imported,null,2))}
 function switchTab(id){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id)); setTimeout(()=>map.invalidateSize(),200)}
-function bind(){document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$('showAll').onclick=showAll;$('clearMap').onclick=clearMap;$('search').oninput=renderRoutes;$('distFilter').onchange=renderRoutes;$('addVia').onclick=()=>addVia();$('startMe').onclick=setStartMyLocation;$('centerMe').onclick=centerMyLocation;$('makePlan').onclick=makePlan;$('clearPlan').onclick=()=>{$('start').value='';$('end').value='';$('viaBox').innerHTML='';planLayer.clearLayers();markersLayer.clearLayers();attrLayer.clearLayers();$('planReport').classList.add('hidden');$('planAttractions').classList.add('hidden');msg('Plan wyczyszczony.')};$('downloadPlan').onclick=planGpx;$('importGpx').onclick=importGpx;$('backup').onclick=backup; if($('showTrail'))$('showTrail').onclick=showSelectedTrail; if($('planTrail'))$('planTrail').onclick=planWithTrail; if($('showAllTrails'))$('showAllTrails').onclick=showAllTrails; if($('clearTrails'))$('clearTrails').onclick=clearTrails; if($('loadGuided'))$('loadGuided').onclick=loadGuidedTrails; if($('fetchTrailsOnline'))$('fetchTrailsOnline').onclick=fetchTrailsOnline; if($('saveTrails'))$('saveTrails').onclick=saveTrailsLocal;}
+function bind(){document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$('showAll').onclick=showAll;$('clearMap').onclick=clearMap;$('search').oninput=renderRoutes;$('distFilter').onchange=renderRoutes;$('addVia').onclick=()=>addVia();$('startMe').onclick=setStartMyLocation;$('centerMe').onclick=centerMyLocation;$('makePlan').onclick=makePlan;$('clearPlan').onclick=()=>{$('start').value='';$('end').value='';$('viaBox').innerHTML='';planLayer.clearLayers();markersLayer.clearLayers();attrLayer.clearLayers();$('planReport').classList.add('hidden');$('planAttractions').classList.add('hidden');msg('Plan wyczyszczony.')};$('downloadPlan').onclick=planGpx;$('importGpx').onclick=importGpx;$('backup').onclick=backup; if($('showTrail'))$('showTrail').onclick=showSelectedTrail; if($('planTrail'))$('planTrail').onclick=planWithTrail; if($('showAllTrails'))$('showAllTrails').onclick=showAllTrails; if($('clearTrails'))$('clearTrails').onclick=clearTrails; if($('loadGuided'))$('loadGuided').onclick=loadGuidedTrails; if($('fetchTrailsOnline'))$('fetchTrailsOnline').onclick=fetchTrailsOnline; if($('saveTrails'))$('saveTrails').onclick=saveTrailsLocal; if($('roundKm')){$('roundKm').oninput=updateRoundSlider; updateRoundSlider();} if($('roundStartMe'))$('roundStartMe').onclick=setRoundStartMyLocation; if($('roundUsePlannerStart'))$('roundUsePlannerStart').onclick=usePlannerStartForRound; if($('makeRound'))$('makeRound').onclick=()=>makeRound(false); if($('roundRandom'))$('roundRandom').onclick=()=>makeRound(true); if($('downloadRound'))$('downloadRound').onclick=downloadRoundGpx;}
 initMap();loadSavedTrails();renderTrails();loadGuidedTrails();bind();loadRoutes();
 </script>
 </body>
