@@ -1,7 +1,7 @@
-<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Rowerowe Trasy Adama V8.9</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><style>
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Rowerowe Trasy Adama V9.0</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><style>
 :root{--g:#0b7a3b;--bg:#eef8f1;--txt:#123;--card:#fff;--mut:#667;--bad:#ffe2e6;--ok:#ddf8e6}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--txt)}#map{height:44vh;border-bottom:5px solid var(--g)}main{max-width:860px;margin:auto;padding:16px}.card,.panel{background:var(--card);border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 6px 20px #0001;border:1px solid #dfe8df}h1{font-size:clamp(32px,7vw,58px);line-height:1;margin:0 0 10px}.version{display:inline-block;background:var(--g);color:white;border-radius:999px;padding:8px 14px;font-weight:800}.status{padding:12px;border-radius:14px;background:var(--ok);font-weight:800;margin:10px 0}.err{background:var(--bad);color:#8b1020}.grid{display:grid;grid-template-columns:1fr;gap:10px}button{border:0;border-radius:16px;background:var(--g);color:white;padding:14px;font-weight:800;font-size:18px}button.secondary{background:#e8f4ec;color:#123}button.warn{background:#fff4df;color:#704000;border:1px solid #ecd39a}input,select{width:100%;font-size:18px;padding:13px;border:1px solid #d5ddd8;border-radius:14px;margin:6px 0 12px}label{font-weight:700}.via{display:grid;grid-template-columns:1fr 48px 48px 48px;gap:8px;align-items:center}.small{font-size:13px;color:var(--mut)}.pill{display:inline-block;background:#e7f4ec;border-radius:999px;padding:6px 10px;margin:3px;font-weight:700}.listitem{border:1px solid #e0e0e0;border-radius:16px;padding:12px;margin:8px 0;background:#fff}.hidden{display:none}a.btn{display:block;text-align:center;text-decoration:none;background:var(--g);color:white;border-radius:16px;padding:15px;font-size:19px;font-weight:900;margin:10px 0}
-</style></head><body><div id="map"></div><main><section class="card"><h1>🚴 Rowerowe Trasy Adama</h1><span class="version">V8.9 — poprawione adresy powtarzalnych miejscowości</span><div id="status" class="status">Ładowanie...</div><div class="grid"><button id="btnAll">🗺️ Pokaż wszystkie trasy</button><button id="btnClear" class="secondary">✖ Wyczyść mapę</button><button id="btnLoc" class="secondary">📍 Gdzie jestem?</button></div></section>
+</style></head><body><div id="map"></div><main><section class="card"><h1>🚴 Rowerowe Trasy Adama</h1><span class="version">V9.0 — naprawione statystyki miesięczne i dystanse tras</span><div id="status" class="status">Ładowanie...</div><div class="grid"><button id="btnAll">🗺️ Pokaż wszystkie trasy</button><button id="btnClear" class="secondary">✖ Wyczyść mapę</button><button id="btnLoc" class="secondary">📍 Gdzie jestem?</button></div></section>
 <section class="panel"><h2>🧭 Zaplanuj szkic trasy</h2><label>Start<input id="start" value="Bogusławice 107B"></label><b>Punkty przez</b><div id="vias"></div><button id="addVia" class="secondary">+ Dodaj punkt przez</button><label>Meta<input id="end" value="Skierniewice, Konarskiego 1"></label><label><input id="preferNew" type="checkbox" checked style="width:auto"> Prowadź drogami, którymi jeszcze nie jechałem</label><button id="plan">Utwórz szkic + atrakcje</button><button id="openMapy">Otwórz rowerowo w Mapy.com</button><button id="newPlan" class="warn">Nowa trasa</button><div id="planOut"></div></section>
 <section class="panel"><h2>🏛️ Atrakcje przy planowanej trasie</h2><label>Promień <select id="atRadius"><option value="3">3 km</option><option value="5" selected>5 km</option><option value="10">10 km</option></select></label><div id="attractions"></div></section>
 <section class="panel"><h2>📊 Statystyki miesięczne</h2><div id="stats"></div></section>
@@ -91,8 +91,33 @@ function renderAttractions(at,pts){
 async function loadRoutes(){
  try{let r=await fetch('routes_v84_simplified.json?v=89'); if(!r.ok) throw 0; routes=await r.json(); if(!Array.isArray(routes)) routes=routes.routes||[]; $('status').textContent='Gotowe. Wczytano '+routes.length+' tras.'; renderStats(); renderRouteList();}catch(e){$('status').textContent='Gotowe. Nie znaleziono bazy tras, ale planer działa.';}
 }
-function renderRouteList(){ $('routes').innerHTML=routes.slice(0,50).map((r,i)=>`<div class="listitem"><b>${i+1}. ${esc(r.name||r.nazwa||'Trasa')}</b><br><span class="small">${(r.distance_km||r.km||'')} km</span></div>`).join('')||'<p>Brak listy tras.</p>'; }
-function renderStats(){let months={};routes.forEach(r=>{let d=r.date||r.data||r.time||'';let m=String(d).slice(0,7)||'bez daty';months[m]=(months[m]||0)+(Number(r.distance_km||r.km)||0)}); $('stats').innerHTML=Object.entries(months).sort().map(([m,km])=>`<div class="listitem"><b>${esc(m)}</b> — ${km.toFixed(1)} km</div>`).join('')||'<p>Brak dat w trasach.</p>';}
+function routeKm(r){
+ let v=r.distanceKm ?? r.distance_km ?? r.distance ?? r.dystans ?? r.km;
+ if(typeof v==='string') v=parseFloat(v.replace(',','.'));
+ if(Number.isFinite(v) && v>0) return v;
+ const name=String(r.name||r.nazwa||'');
+ const m=name.match(/(?:^|\s)(\d+(?:[.,]\d+)?)\s*(?:km)?(?:\s|$)/i);
+ if(m) return parseFloat(m[1].replace(',','.'));
+ const pts=r.points||r.coords||[];
+ if(Array.isArray(pts)&&pts.length>1){let s=0;for(let i=1;i<pts.length;i++){let a={lat:pts[i-1][0],lon:pts[i-1][1]},b={lat:pts[i][0],lon:pts[i][1]};s+=distKm(a,b);}return s;}
+ return 0;
+}
+function routeMonth(r){
+ let d=r.month || r.date || r.data || r.time || r.created_at || r.startTime || '';
+ d=String(d);
+ const m=d.match(/(20\d{2})[-_. ]?(0[1-9]|1[0-2])/);
+ if(m) return `${m[1]}-${m[2]}`;
+ return 'bez daty';
+}
+function renderRouteList(){
+ $('routes').innerHTML=routes.slice(0,80).map((r,i)=>{const km=routeKm(r);return `<div class="listitem"><b>${i+1}. ${esc(r.name||r.nazwa||'Trasa')}</b><br><span class="small">${km?km.toFixed(1):'brak dystansu'} km · ${esc(routeMonth(r))}</span></div>`}).join('')||'<p>Brak listy tras.</p>';
+}
+function renderStats(){
+ let months={}, total=0;
+ routes.forEach(r=>{const m=routeMonth(r);const km=routeKm(r);months[m]=(months[m]||0)+km; total+=km;});
+ const rows=Object.entries(months).sort().map(([m,km])=>`<div class="listitem"><b>${esc(m)}</b> — ${km.toFixed(1)} km</div>`).join('');
+ $('stats').innerHTML=`<div class="status">Razem: ${total.toFixed(1)} km · tras: ${routes.length}</div>`+(rows||'<p>Brak dat w trasach.</p>');
+}
 function drawAll(){routeLayers.forEach(l=>map.removeLayer(l));routeLayers=[];routes.slice(0,135).forEach(r=>{let pts=r.points||r.coords||r.geometry?.coordinates?.map(c=>[c[1],c[0]])||[]; if(pts.length){let l=L.polyline(pts,{color:'#3388ff',weight:3,opacity:.55}).addTo(map);routeLayers.push(l)}}); if(routeLayers.length){let g=L.featureGroup(routeLayers);map.fitBounds(g.getBounds());}}
 function clearMap(){routeLayers.forEach(l=>map.removeLayer(l));routeLayers=[];markerLayer.clearLayers(); if(planLayer){map.removeLayer(planLayer);planLayer=null}}
 function loadGpx(){let files=[...$('gpx').files];$('gpxOut').textContent='Wybrano '+files.length+' plików. Duże archiwa GPX najlepiej wcześniej uprościć.'}
