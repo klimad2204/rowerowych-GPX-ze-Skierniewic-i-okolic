@@ -99,16 +99,78 @@ function mapyUrl(pts){
  if(vias) u+=`&waypoints=${encodeURIComponent(vias)}`;
  return u;
 }
+function attractionType(tags={}){
+ const vals=[tags.historic,tags.tourism,tags.amenity,tags.memorial,tags.natural,tags.leisure,tags.man_made].filter(Boolean).join(' ');
+ const map={
+  wayside_shrine:['⛪ Kapliczka przydrożna','Mały obiekt sakralny przy drodze, często lokalny punkt orientacyjny lub miejsce pamięci.'],
+  wayside_cross:['✝️ Krzyż przydrożny','Przydrożny krzyż, często związany z lokalną historią, dawnym traktem lub miejscem pamięci.'],
+  church:['⛪ Kościół','Obiekt sakralny, często z ciekawą architekturą i historią miejscowości.'],
+  chapel:['⛪ Kaplica','Mniejszy obiekt sakralny lub kaplica przydrożna.'],
+  castle:['🏰 Zamek','Zabytek obronny lub dawna rezydencja historyczna.'],
+  manor:['🏛️ Dwór','Dawna siedziba ziemiańska lub rezydencja lokalna.'],
+  palace:['🏛️ Pałac','Reprezentacyjna rezydencja, często z parkiem lub założeniem dworskim.'],
+  monument:['🗿 Pomnik','Pomnik lub obiekt upamiętniający osobę, wydarzenie albo miejsce.'],
+  memorial:['🕯️ Miejsce pamięci','Miejsce upamiętniające wydarzenie, ofiary wojny albo lokalną historię.'],
+  war_memorial:['⚔️ Pomnik wojenny','Pomnik lub miejsce pamięci związane z wojną.'],
+  battlefield:['⚔️ Pole bitwy','Miejsce wydarzeń wojennych lub historycznych.'],
+  cemetery:['🪦 Cmentarz','Cmentarz lub miejsce pochówku; warto sprawdzić, czy są mogiły wojenne.'],
+  museum:['🏛️ Muzeum','Muzeum lub izba pamięci z ekspozycją historyczną albo regionalną.'],
+  viewpoint:['🔭 Punkt widokowy','Miejsce z widokiem na okolicę, dobre na postój.'],
+  attraction:['📍 Atrakcja turystyczna','Miejsce oznaczone w OpenStreetMap jako atrakcja turystyczna.'],
+  nature_reserve:['🌲 Rezerwat przyrody','Chroniony obszar przyrodniczy, dobry punkt na spokojny odcinek trasy.'],
+  watermill:['⚙️ Młyn wodny','Zabytek techniki lub dawny obiekt gospodarczy związany z wodą.'],
+  tower:['🗼 Wieża','Wieża lub obiekt wysokościowy, czasem punkt widokowy.'],
+  ruins:['🏚️ Ruiny','Pozostałości dawnej budowli lub obiektu historycznego.']
+ };
+ for(const k of Object.keys(map)){ if(vals.includes(k)) return {label:map[k][0], desc:map[k][1], key:k}; }
+ if(tags.name) return {label:'📍 Ciekawe miejsce', desc:'Obiekt z OpenStreetMap przy planowanej trasie.', key:'poi'};
+ return {label:'📍 Punkt OSM', desc:'Punkt z OpenStreetMap bez szczegółowej nazwy; sprawdź na mapie przed dodaniem do trasy.', key:'poi'};
+}
+function attractionName(tags={}, type){
+ return tags.name || tags['name:pl'] || tags['official_name'] || tags['historic'] || tags['tourism'] || type.label.replace(/^\S+\s/,'') || 'Atrakcja';
+}
+function attractionDesc(tags={}, type){
+ const parts=[];
+ if(tags.description) parts.push(tags.description);
+ if(tags.wikipedia) parts.push('Wikipedia: '+tags.wikipedia);
+ if(tags.wikidata) parts.push('Wikidata: '+tags.wikidata);
+ if(tags.start_date) parts.push('Datowanie: '+tags.start_date);
+ if(tags.memorial) parts.push('Typ pamięci: '+tags.memorial);
+ if(parts.length) return parts.join(' • ');
+ return type.desc;
+}
 async function findAttractions(pts){
  const r=+$('atRadius').value, minLat=Math.min(...pts.map(p=>p.lat))-0.15, maxLat=Math.max(...pts.map(p=>p.lat))+0.15, minLon=Math.min(...pts.map(p=>p.lon))-0.2, maxLon=Math.max(...pts.map(p=>p.lon))+0.2;
- const q=`[out:json][timeout:20];(node["historic"](${minLat},${minLon},${maxLat},${maxLon});node["tourism"~"museum|attraction|viewpoint"](${minLat},${minLon},${maxLat},${maxLon});node["memorial"](${minLat},${minLon},${maxLat},${maxLon});node["heritage"](${minLat},${minLon},${maxLat},${maxLon}););out center 80;`;
- try{const res=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:q});const data=await res.json();return data.elements.map(e=>({name:e.tags?.name||e.tags?.historic||e.tags?.tourism||'Atrakcja OSM',lat:e.lat||e.center?.lat,lon:e.lon||e.center?.lon,type:e.tags?.historic||e.tags?.tourism||e.tags?.memorial||'atrakcja'})).filter(a=>a.lat&&a.lon).map(a=>({...a,dist:distToRoute({lat:a.lat,lon:a.lon},pts)})).filter(a=>a.dist<=r).sort((a,b)=>a.dist-b.dist).slice(0,20);}catch(e){return []}
+ const q=`[out:json][timeout:25];(
+  node["historic"](${minLat},${minLon},${maxLat},${maxLon});
+  way["historic"](${minLat},${minLon},${maxLat},${maxLon});
+  relation["historic"](${minLat},${minLon},${maxLat},${maxLon});
+  node["tourism"~"museum|attraction|viewpoint"](${minLat},${minLon},${maxLat},${maxLon});
+  node["amenity"~"place_of_worship|grave_yard"](${minLat},${minLon},${maxLat},${maxLon});
+  node["memorial"](${minLat},${minLon},${maxLat},${maxLon});
+  node["natural"="peak"](${minLat},${minLon},${maxLat},${maxLon});
+  node["leisure"="nature_reserve"](${minLat},${minLon},${maxLat},${maxLon});
+ );out center 120;`;
+ try{
+  const res=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:q});
+  const data=await res.json();
+  const seen=new Set();
+  return data.elements.map(e=>{
+   const tags=e.tags||{}; const typ=attractionType(tags); const lat=e.lat||e.center?.lat, lon=e.lon||e.center?.lon;
+   return {name:attractionName(tags,typ), label:typ.label, type:typ.key, desc:attractionDesc(tags,typ), lat, lon, tags};
+  }).filter(a=>a.lat&&a.lon).map(a=>({...a,dist:distToRoute({lat:a.lat,lon:a.lon},pts)})).filter(a=>a.dist<=r).filter(a=>{const k=a.name+'|'+a.lat.toFixed(4)+'|'+a.lon.toFixed(4); if(seen.has(k)) return false; seen.add(k); return true;}).sort((a,b)=>a.dist-b.dist).slice(0,30);
+ }catch(e){return []}
+}
+function addAttractionVia(lat,lon,name){
+ addVia((+lat).toFixed(5)+', '+(+lon).toFixed(5));
+ $('planOut').innerHTML='<div class="status">Dodano atrakcję jako punkt przez: '+esc(name)+'. Kliknij ponownie „Utwórz szkic + atrakcje”.</div>';
+ window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
 }
 function renderAttractions(at,pts){
- $('attractions').innerHTML= at.length? at.map(a=>`<div class="listitem"><b>${esc(a.name)}</b><br><span class="pill">${esc(a.type)}</span><span class="pill">${a.dist.toFixed(1)} km od szkicu</span><br><span class="small">${a.lat.toFixed(5)}, ${a.lon.toFixed(5)}</span></div>`).join('') : '<p>Brak atrakcji z GPS w wybranym promieniu.</p>';
+ $('attractions').innerHTML= at.length? at.map((a,i)=>`<div class="listitem"><b>${esc(a.name)}</b><br><span class="pill">${esc(a.label)}</span><span class="pill">${a.dist.toFixed(1)} km od szkicu</span><p class="small">${esc(a.desc)}</p><span class="small">GPS: ${a.lat.toFixed(5)}, ${a.lon.toFixed(5)}</span><br><button class="secondary" onclick="addAttractionVia(${a.lat},${a.lon},'${esc(a.name).replace(/'/g,'&#39;')}')">📍 Dodaj jako punkt PRZEZ</button></div>`).join('') : '<p>Brak atrakcji z GPS w wybranym promieniu.</p>';
 }
 async function loadRoutes(){
- try{let r=await fetch('routes_v84_simplified.json?v=91'); if(!r.ok) throw 0; routes=await r.json(); if(!Array.isArray(routes)) routes=routes.routes||[]; $('status').textContent='Gotowe. Wczytano '+routes.length+' tras.'; renderStats(); renderRouteList();}catch(e){$('status').textContent='Gotowe. Nie znaleziono bazy tras, ale planer działa.';}
+ try{let r=await fetch('routes_v84_simplified.json?v=92'); if(!r.ok) throw 0; routes=await r.json(); if(!Array.isArray(routes)) routes=routes.routes||[]; $('status').textContent='Gotowe. Wczytano '+routes.length+' tras.'; renderStats(); renderRouteList();}catch(e){$('status').textContent='Gotowe. Nie znaleziono bazy tras, ale planer działa.';}
 }
 function routeKm(r){
  let v=r.distanceKm ?? r.distance_km ?? r.distance ?? r.dystans ?? r.km;
