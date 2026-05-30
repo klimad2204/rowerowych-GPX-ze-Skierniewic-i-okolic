@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-store">
-<title>Rowerowe Trasy Adama V10.6</title>
+<title>Rowerowe Trasy Adama V10.7</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--bg:#eef7f1;--card:#ffffff;--ink:#123024;--muted:#5a6f64;--green:#176b4c;--green2:#23966b;--red:#cc3d3d;--blue:#2563eb;--line:#d7e8de}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}#map{position:sticky;top:0;height:42vh;z-index:1;border-bottom:3px solid var(--green)}main{max-width:980px;margin:0 auto;padding:12px 12px 40px}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 6px 18px #0001}h1{font-size:24px;margin:4px 0 8px}h2{font-size:19px;margin:4px 0 10px}.version{display:inline-block;background:#e6f5eb;color:#0b5d3e;border:1px solid #b9e2c9;border-radius:999px;padding:5px 9px;font-weight:700}.status{background:#14251d;color:#fff;border-radius:14px;padding:10px;margin:10px 0}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tabs button,.grid button,button,.btn{border:0;border-radius:13px;padding:11px 10px;background:var(--green);color:white;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}.tabs button.active{background:#0e3f2d}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.small{font-size:13px}.secondary{background:#375a7f!important}.warn{background:#9f412f!important}.ghost{background:#eef4f0!important;color:#153b2b!important;border:1px solid #cdded4!important}input,select,textarea{width:100%;padding:11px;border:1px solid #c8d8ce;border-radius:12px;font:inherit;background:#fff}label{display:block;margin:8px 0;color:#243b31;font-weight:650}.tab{display:none}.tab.active{display:block}.route,.attr,.statrow{border:1px solid var(--line);border-radius:14px;padding:11px;margin:8px 0;background:#fbfefd}.route h3,.attr h3{margin:0 0 6px;font-size:16px}.meta{color:var(--muted);font-size:13px}.pill{display:inline-block;background:#edf7f1;border:1px solid #cfe4d8;color:#145237;border-radius:99px;padding:3px 7px;margin:2px;font-size:12px}.bar{height:8px;background:#e2ece6;border-radius:9px;overflow:hidden}.bar>span{display:block;height:8px;background:var(--green2)}.hidden{display:none!important}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.leaflet-popup-content{font:14px system-ui}.danger{color:#9f2626}.ok{color:#0f6b43}.mono{font-family:ui-monospace,Consolas,monospace}.note{font-size:13px;color:#51665b;line-height:1.45}.listbox{max-height:520px;overflow:auto}.kbd{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:1px 5px}.footer{font-size:12px;color:#607369;text-align:center;margin:20px 0}@media(max-width:700px){#map{height:38vh}.tabs{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}main{padding:9px}.card,.panel{border-radius:14px}}
@@ -18,7 +18,7 @@
 <main>
 <section class="card">
 <h1>🚴‍♂️ Rowerowe Trasy Adama</h1>
-<p><span class="version">V10.6 szlaki + infrastruktura rowerowa z OSM/Overpass</span></p>
+<p><span class="version">V10.7 naprawa pobierania szlaków z OSM/Overpass</span></p>
 <div id="status" class="status">Start aplikacji...</div>
 <div class="tabs">
 <button data-tab="planner" class="active">🧭 Planer</button>
@@ -71,7 +71,7 @@
 <label>Zasięg pobierania <select id="trailRadius"><option value="view">Widoczny ekran</option><option value="20">20 km od środka mapy</option><option value="50" selected>50 km od środka mapy</option><option value="100">100 km od środka mapy</option></select></label>
 <label>Warstwy <select id="trailKind"><option value="all" selected>Wszystko: szlaki + infrastruktura</option><option value="routes">Tylko szlaki LCN/RCN/NCN/ICN</option><option value="infra">Tylko ścieżki/drogi rowerowe</option></select></label>
 </div>
-<p class="note">V10.6 pobiera z OpenStreetMap/Overpass: relacje <b>route=bicycle</b> (LCN/RCN/NCN/ICN/EuroVelo) oraz infrastrukturę rowerową: <b>highway=cycleway</b>, <b>cycleway=*</b>, <b>bicycle=designated/yes</b>, <b>bicycle_road=yes</b>. Duży obszar 100 km może ładować się dłużej.</p>
+<p class="note">V10.7 pobiera z OpenStreetMap/Overpass: relacje <b>route=bicycle</b> (LCN/RCN/NCN/ICN/EuroVelo) oraz infrastrukturę rowerową: <b>highway=cycleway</b>, <b>cycleway=*</b>, <b>bicycle=designated/yes</b>, <b>bicycle_road=yes</b>. Duży obszar 100 km może ładować się dłużej.</p>
 <div id="trailsList" class="listbox"></div>
 </section>
 <section id="tools" class="tab panel">
@@ -81,7 +81,7 @@
 <p class="note">Duży plik zbiorczy 54 MB został już przetworzony do pliku <b>routes_v106_simplified.json</b>. Do telefonu najlepiej dodawać pojedyncze nowe GPX po jeździe.</p>
 <div id="toolsOut"></div>
 </section>
-<p class="footer">V10.6 — szlaki lokalne/regionalne/krajowe, ścieżki rowerowe i planowanie po szlakach</p>
+<p class="footer">V10.7 — naprawione pobieranie szlaków: bbox + relacje + infrastruktura</p>
 </main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -235,6 +235,54 @@ function trailDescFromTags(tags={}){
   if(tags.operator) parts.push('operator: '+tags.operator);
   if(tags.description) parts.push(tags.description);
   return parts.join(' • ') || 'Szlak rowerowy pobrany z OpenStreetMap.';
+}
+
+function bboxForTrailDownload(){
+  const mode = $('trailRadius')?.value || 'view';
+  const b = map.getBounds();
+  if(mode === 'view') return [
+    +b.getSouth().toFixed(6),
+    +b.getWest().toFixed(6),
+    +b.getNorth().toFixed(6),
+    +b.getEast().toFixed(6)
+  ];
+  const km = Number(mode) || 20;
+  const c = map.getCenter();
+  const dLat = km / 111.32;
+  const dLon = km / (111.32 * Math.max(0.25, Math.cos(c.lat * Math.PI / 180)));
+  return [
+    +(c.lat - dLat).toFixed(6),
+    +(c.lng - dLon).toFixed(6),
+    +(c.lat + dLat).toFixed(6),
+    +(c.lng + dLon).toFixed(6)
+  ];
+}
+function overpassTrailQuery(s,w,n,e,kind='all'){
+  const routePart = `
+    relation["type"="route"]["route"="bicycle"](${s},${w},${n},${e});
+    way["route"="bicycle"](${s},${w},${n},${e});`;
+  const infraPart = `
+    way["highway"="cycleway"](${s},${w},${n},${e});
+    way["cycleway"](${s},${w},${n},${e});
+    way["cycleway:left"](${s},${w},${n},${e});
+    way["cycleway:right"](${s},${w},${n},${e});
+    way["bicycle"="designated"](${s},${w},${n},${e});
+    way["bicycle_road"="yes"](${s},${w},${n},${e});`;
+  const body = kind==='routes' ? routePart : kind==='infra' ? infraPart : routePart + infraPart;
+  return `[out:json][timeout:40];(${body});out tags geom 500;`;
+}
+function trailClassFromTags(tags={}){
+  const net = (tags.network || '').toLowerCase();
+  const hwy = (tags.highway || '').toLowerCase();
+  if(net.includes('icn') || /eurovelo/i.test((tags.name||'')+' '+(tags.ref||''))) return {kind:'EuroVelo / międzynarodowy szlak rowerowy', color:'#7c3aed'};
+  if(net.includes('ncn')) return {kind:'krajowy szlak rowerowy', color:'#dc2626'};
+  if(net.includes('rcn')) return {kind:'regionalny szlak rowerowy', color:'#f59e0b'};
+  if(net.includes('lcn')) return {kind:'lokalny szlak rowerowy', color:'#16a34a'};
+  if(hwy==='cycleway') return {kind:'droga/ścieżka rowerowa', color:'#0284c7'};
+  if(tags.cycleway || tags['cycleway:left'] || tags['cycleway:right']) return {kind:'infrastruktura rowerowa przy drodze', color:'#0ea5e9'};
+  if(tags.bicycle_road==='yes') return {kind:'droga rowerowa / bicycle road', color:'#14b8a6'};
+  if(tags.bicycle==='designated') return {kind:'droga z wyznaczonym ruchem rowerowym', color:'#0891b2'};
+  return {kind:'szlak/infrastruktura rowerowa OSM', color:'#0f766e'};
 }
 async function fetchTrailsOnline(){
   try{
