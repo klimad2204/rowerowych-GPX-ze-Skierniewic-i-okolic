@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-store">
-<title>Rowerowe Trasy Adama V10.1</title>
+<title>Rowerowe Trasy Adama V10.2</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--bg:#eef7f1;--card:#ffffff;--ink:#123024;--muted:#5a6f64;--green:#176b4c;--green2:#23966b;--red:#cc3d3d;--blue:#2563eb;--line:#d7e8de}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}#map{position:sticky;top:0;height:42vh;z-index:1;border-bottom:3px solid var(--green)}main{max-width:980px;margin:0 auto;padding:12px 12px 40px}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 6px 18px #0001}h1{font-size:24px;margin:4px 0 8px}h2{font-size:19px;margin:4px 0 10px}.version{display:inline-block;background:#e6f5eb;color:#0b5d3e;border:1px solid #b9e2c9;border-radius:999px;padding:5px 9px;font-weight:700}.status{background:#14251d;color:#fff;border-radius:14px;padding:10px;margin:10px 0}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tabs button,.grid button,button,.btn{border:0;border-radius:13px;padding:11px 10px;background:var(--green);color:white;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}.tabs button.active{background:#0e3f2d}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.small{font-size:13px}.secondary{background:#375a7f!important}.warn{background:#9f412f!important}.ghost{background:#eef4f0!important;color:#153b2b!important;border:1px solid #cdded4!important}input,select,textarea{width:100%;padding:11px;border:1px solid #c8d8ce;border-radius:12px;font:inherit;background:#fff}label{display:block;margin:8px 0;color:#243b31;font-weight:650}.tab{display:none}.tab.active{display:block}.route,.attr,.statrow{border:1px solid var(--line);border-radius:14px;padding:11px;margin:8px 0;background:#fbfefd}.route h3,.attr h3{margin:0 0 6px;font-size:16px}.meta{color:var(--muted);font-size:13px}.pill{display:inline-block;background:#edf7f1;border:1px solid #cfe4d8;color:#145237;border-radius:99px;padding:3px 7px;margin:2px;font-size:12px}.bar{height:8px;background:#e2ece6;border-radius:9px;overflow:hidden}.bar>span{display:block;height:8px;background:var(--green2)}.hidden{display:none!important}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.leaflet-popup-content{font:14px system-ui}.danger{color:#9f2626}.ok{color:#0f6b43}.mono{font-family:ui-monospace,Consolas,monospace}.note{font-size:13px;color:#51665b;line-height:1.45}.listbox{max-height:520px;overflow:auto}.kbd{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:1px 5px}.footer{font-size:12px;color:#607369;text-align:center;margin:20px 0}@media(max-width:700px){#map{height:38vh}.tabs{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}main{padding:9px}.card,.panel{border-radius:14px}}
 
 .pickOverlay{position:fixed;inset:0;background:#0008;z-index:9999;display:flex;align-items:center;justify-content:center;padding:14px}.pickBox{background:#fff;border-radius:18px;max-width:720px;width:100%;max-height:85vh;overflow:auto;padding:16px;box-shadow:0 18px 50px #0005}.pickBox h2{margin-top:0}.pickItem{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:1px solid #d7e8de;border-radius:14px;background:#f7fbf8;color:#123024}.pickItem b{display:block}.pickItem small{display:block;color:#5a6f64;margin-top:4px}.pickCancel{background:#777!important}
+#map,.leaflet-container{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
 </style>
 </head>
 <body>
@@ -17,7 +18,7 @@
 <main>
 <section class="card">
 <h1>🚴‍♂️ Rowerowe Trasy Adama</h1>
-<p><span class="version">V10.1 wybór miejscowości: trasy + statystyki + atrakcje po całej trasie</span></p>
+<p><span class="version">V10.2 przytrzymanie mapy: dodawanie punktu PRZEZ działa na Androidzie</span></p>
 <div id="status" class="status">Start aplikacji...</div>
 <div class="tabs">
 <button data-tab="planner" class="active">🧭 Planer</button>
@@ -93,7 +94,48 @@ function msg(t){statusEl.textContent=t} function esc(s){return String(s??'').rep
 function hav(a,b){const R=6371,dLat=(b[0]-a[0])*Math.PI/180,dLon=(b[1]-a[1])*Math.PI/180,la1=a[0]*Math.PI/180,la2=b[0]*Math.PI/180;const x=Math.sin(dLat/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.min(1,Math.sqrt(x)))}
 function lineKm(cs){let d=0;for(let i=1;i<cs.length;i++)d+=hav(cs[i-1],cs[i]);return d}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[,\.]/g,' ').replace(/\s+/g,' ').trim()}
-function initMap(){map=L.map('map').setView([51.9,20.1],9);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);baseLayer=L.layerGroup().addTo(map);selectedLayer=L.layerGroup().addTo(map);planLayer=L.layerGroup().addTo(map);attrLayer=L.layerGroup().addTo(map);markersLayer=L.layerGroup().addTo(map);let hold;map.on('mousedown touchstart',e=>{hold=setTimeout(()=>addVia(`${e.latlng.lat.toFixed(6)},${e.latlng.lng.toFixed(6)}`),850)});map.on('mouseup touchend dragstart',()=>clearTimeout(hold));}
+function initMap(){
+  map=L.map('map',{tap:false}).setView([51.9,20.1],9);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+  baseLayer=L.layerGroup().addTo(map);selectedLayer=L.layerGroup().addTo(map);planLayer=L.layerGroup().addTo(map);attrLayer=L.layerGroup().addTo(map);markersLayer=L.layerGroup().addTo(map);
+  setupLongPressVia();
+}
+function addViaFromMap(latlng){
+  if(!latlng) return;
+  const val=`${latlng.lat.toFixed(6)},${latlng.lng.toFixed(6)}`;
+  addVia(val);
+  L.marker([latlng.lat,latlng.lng]).addTo(markersLayer).bindPopup('Punkt PRZEZ z mapy<br>'+val).openPopup();
+  msg('Dodano punkt PRZEZ z mapy: '+val);
+}
+function setupLongPressVia(){
+  let timer=null, startPoint=null, fired=false;
+  const el=map.getContainer();
+  function clear(){ if(timer){clearTimeout(timer); timer=null;} }
+  function moved(ev){
+    if(!startPoint) return false;
+    const p = ev.touches?.[0] || ev.changedTouches?.[0] || ev;
+    const dx=(p.clientX||0)-startPoint.x, dy=(p.clientY||0)-startPoint.y;
+    return Math.sqrt(dx*dx+dy*dy)>14;
+  }
+  function start(ev){
+    if(ev.pointerType==='mouse' && ev.button!==0) return;
+    fired=false; clear();
+    const p = ev.touches?.[0] || ev;
+    startPoint={x:p.clientX,y:p.clientY};
+    const latlng=map.mouseEventToLatLng(p);
+    timer=setTimeout(()=>{ fired=true; clear(); addViaFromMap(latlng); },950);
+  }
+  function move(ev){ if(moved(ev)) clear(); }
+  function end(ev){ clear(); }
+  el.addEventListener('pointerdown',start,{passive:true});
+  el.addEventListener('pointermove',move,{passive:true});
+  el.addEventListener('pointerup',end,{passive:true});
+  el.addEventListener('pointercancel',end,{passive:true});
+  el.addEventListener('touchstart',start,{passive:true});
+  el.addEventListener('touchmove',move,{passive:true});
+  el.addEventListener('touchend',end,{passive:true});
+  map.on('contextmenu',e=>addViaFromMap(e.latlng));
+}
 async function loadRoutes(){try{const r=await fetch('routes_v100_simplified.json?v=100'); if(!r.ok) throw new Error('Brak routes_v100_simplified.json'); routes=await r.json(); loadImported(); renderRoutes(); renderStats(); msg(`Wczytano ${routes.length} tras. Statystyki i lista gotowe.`)}catch(e){msg('Nie wczytano pliku routes_v100_simplified.json — wgraj go razem z index.html.'); console.error(e)}}
 function loadImported(){try{imported=JSON.parse(localStorage.getItem('adam_v10_imported')||'[]'); routes=[...routes,...imported]}catch(e){imported=[]}}
 function saveImported(){localStorage.setItem('adam_v10_imported',JSON.stringify(imported))}
