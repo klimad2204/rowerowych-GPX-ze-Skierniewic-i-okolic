@@ -1,8 +1,8 @@
-<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Rowerowe Trasy Adama V9.0</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><style>
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Rowerowe Trasy Adama V9.1</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><style>
 :root{--g:#0b7a3b;--bg:#eef8f1;--txt:#123;--card:#fff;--mut:#667;--bad:#ffe2e6;--ok:#ddf8e6}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--txt)}#map{height:44vh;border-bottom:5px solid var(--g)}main{max-width:860px;margin:auto;padding:16px}.card,.panel{background:var(--card);border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 6px 20px #0001;border:1px solid #dfe8df}h1{font-size:clamp(32px,7vw,58px);line-height:1;margin:0 0 10px}.version{display:inline-block;background:var(--g);color:white;border-radius:999px;padding:8px 14px;font-weight:800}.status{padding:12px;border-radius:14px;background:var(--ok);font-weight:800;margin:10px 0}.err{background:var(--bad);color:#8b1020}.grid{display:grid;grid-template-columns:1fr;gap:10px}button{border:0;border-radius:16px;background:var(--g);color:white;padding:14px;font-weight:800;font-size:18px}button.secondary{background:#e8f4ec;color:#123}button.warn{background:#fff4df;color:#704000;border:1px solid #ecd39a}input,select{width:100%;font-size:18px;padding:13px;border:1px solid #d5ddd8;border-radius:14px;margin:6px 0 12px}label{font-weight:700}.via{display:grid;grid-template-columns:1fr 48px 48px 48px;gap:8px;align-items:center}.small{font-size:13px;color:var(--mut)}.pill{display:inline-block;background:#e7f4ec;border-radius:999px;padding:6px 10px;margin:3px;font-weight:700}.listitem{border:1px solid #e0e0e0;border-radius:16px;padding:12px;margin:8px 0;background:#fff}.hidden{display:none}a.btn{display:block;text-align:center;text-decoration:none;background:var(--g);color:white;border-radius:16px;padding:15px;font-size:19px;font-weight:900;margin:10px 0}
-</style></head><body><div id="map"></div><main><section class="card"><h1>🚴 Rowerowe Trasy Adama</h1><span class="version">V9.0 — naprawione statystyki miesięczne i dystanse tras</span><div id="status" class="status">Ładowanie...</div><div class="grid"><button id="btnAll">🗺️ Pokaż wszystkie trasy</button><button id="btnClear" class="secondary">✖ Wyczyść mapę</button><button id="btnLoc" class="secondary">📍 Gdzie jestem?</button></div></section>
-<section class="panel"><h2>🧭 Zaplanuj szkic trasy</h2><label>Start<input id="start" value="Bogusławice 107B"></label><b>Punkty przez</b><div id="vias"></div><button id="addVia" class="secondary">+ Dodaj punkt przez</button><label>Meta<input id="end" value="Skierniewice, Konarskiego 1"></label><label><input id="preferNew" type="checkbox" checked style="width:auto"> Prowadź drogami, którymi jeszcze nie jechałem</label><button id="plan">Utwórz szkic + atrakcje</button><button id="openMapy">Otwórz rowerowo w Mapy.com</button><button id="newPlan" class="warn">Nowa trasa</button><div id="planOut"></div></section>
+</style></head><body><div id="map"></div><main><section class="card"><h1>🚴 Rowerowe Trasy Adama</h1><span class="version">V9.1 — dodawanie punktu przez przytrzymaniem mapy</span><div id="status" class="status">Ładowanie...</div><div class="grid"><button id="btnAll">🗺️ Pokaż wszystkie trasy</button><button id="btnClear" class="secondary">✖ Wyczyść mapę</button><button id="btnLoc" class="secondary">📍 Gdzie jestem?</button></div></section>
+<section class="panel"><h2>🧭 Zaplanuj szkic trasy</h2><label>Start<input id="start" value="Bogusławice 107B"></label><b>Punkty przez</b><div id="vias"></div><button id="addVia" class="secondary">+ Dodaj punkt przez</button><p class="small">Przytrzymaj palcem dowolne miejsce na mapie około 1 sekundy, aby dodać je jako punkt „Przez”.</p><label>Meta<input id="end" value="Skierniewice, Konarskiego 1"></label><label><input id="preferNew" type="checkbox" checked style="width:auto"> Prowadź drogami, którymi jeszcze nie jechałem</label><button id="plan">Utwórz szkic + atrakcje</button><button id="openMapy">Otwórz rowerowo w Mapy.com</button><button id="newPlan" class="warn">Nowa trasa</button><div id="planOut"></div></section>
 <section class="panel"><h2>🏛️ Atrakcje przy planowanej trasie</h2><label>Promień <select id="atRadius"><option value="3">3 km</option><option value="5" selected>5 km</option><option value="10">10 km</option></select></label><div id="attractions"></div></section>
 <section class="panel"><h2>📊 Statystyki miesięczne</h2><div id="stats"></div></section>
 <section class="panel"><h2>➕ Wczytaj GPX z telefonu</h2><input id="gpx" type="file" accept=".gpx,application/gpx+xml" multiple><button id="loadGpx">Wczytaj wybrane GPX</button><div id="gpxOut" class="small"></div></section>
@@ -56,6 +56,25 @@ function distKm(a,b){return Math.hypot((a.lat-b.lat)*111,(a.lon-b.lon)*70);}
 function distToSeg(p,a,b){let x=p.lon,y=p.lat,x1=a.lon,y1=a.lat,x2=b.lon,y2=b.lat;let A=x-x1,B=y-y1,C=x2-x1,D=y2-y1;let t=Math.max(0,Math.min(1,(A*C+B*D)/(C*C+D*D||1)));return Math.hypot((y-(y1+t*D))*111,(x-(x1+t*C))*70);}
 function distToRoute(p,pts){let best=1e9;for(let i=1;i<pts.length;i++)best=Math.min(best,distToSeg(p,pts[i-1],pts[i]));return best;}
 function addVia(v=''){let d=document.createElement('div');d.className='via';d.innerHTML=`<input class="viaInput" placeholder="np. Jeżów" value="${esc(v)}"><button class="secondary up">▲</button><button class="secondary down">▼</button><button class="warn del">×</button>`;$('vias').appendChild(d);d.querySelector('.del').onclick=()=>d.remove();d.querySelector('.up').onclick=()=>{let p=d.previousElementSibling;if(p)$('vias').insertBefore(d,p)};d.querySelector('.down').onclick=()=>{let n=d.nextElementSibling;if(n)$('vias').insertBefore(n,d)};}
+function addViaFromMap(latlng){
+ const val=`${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+ addVia(val);
+ const m=L.marker([latlng.lat,latlng.lng],{title:'Punkt przez z mapy'}).addTo(markerLayer).bindPopup('Dodano jako punkt PRZEZ<br>'+val).openPopup();
+ $('planOut').innerHTML='<div class="status">Dodano punkt przez z mapy: '+esc(val)+'. Teraz kliknij „Utwórz szkic + atrakcje”.</div>';
+ document.querySelector('.viaInput:last-of-type')?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function enableLongPressAddVia(){
+ let timer=null, start=null, moved=false;
+ const cancel=()=>{if(timer){clearTimeout(timer);timer=null;}};
+ map.on('mousedown touchstart', e=>{
+   moved=false; start=e.latlng; cancel();
+   timer=setTimeout(()=>{ if(!moved && start) addViaFromMap(start); timer=null; }, 750);
+ });
+ map.on('mousemove touchmove dragstart zoomstart',()=>{moved=true;cancel();});
+ map.on('mouseup touchend touchcancel contextmenu',()=>{cancel();});
+ map.on('contextmenu',e=>{ e.originalEvent?.preventDefault?.(); if(e.latlng) addViaFromMap(e.latlng); });
+}
+
 async function makePlan(){
  try{
   $('planOut').innerHTML='<div class="status">Rozpoznaję adresy...</div>';
@@ -89,7 +108,7 @@ function renderAttractions(at,pts){
  $('attractions').innerHTML= at.length? at.map(a=>`<div class="listitem"><b>${esc(a.name)}</b><br><span class="pill">${esc(a.type)}</span><span class="pill">${a.dist.toFixed(1)} km od szkicu</span><br><span class="small">${a.lat.toFixed(5)}, ${a.lon.toFixed(5)}</span></div>`).join('') : '<p>Brak atrakcji z GPS w wybranym promieniu.</p>';
 }
 async function loadRoutes(){
- try{let r=await fetch('routes_v84_simplified.json?v=89'); if(!r.ok) throw 0; routes=await r.json(); if(!Array.isArray(routes)) routes=routes.routes||[]; $('status').textContent='Gotowe. Wczytano '+routes.length+' tras.'; renderStats(); renderRouteList();}catch(e){$('status').textContent='Gotowe. Nie znaleziono bazy tras, ale planer działa.';}
+ try{let r=await fetch('routes_v84_simplified.json?v=91'); if(!r.ok) throw 0; routes=await r.json(); if(!Array.isArray(routes)) routes=routes.routes||[]; $('status').textContent='Gotowe. Wczytano '+routes.length+' tras.'; renderStats(); renderRouteList();}catch(e){$('status').textContent='Gotowe. Nie znaleziono bazy tras, ale planer działa.';}
 }
 function routeKm(r){
  let v=r.distanceKm ?? r.distance_km ?? r.distance ?? r.dystans ?? r.km;
@@ -123,5 +142,5 @@ function clearMap(){routeLayers.forEach(l=>map.removeLayer(l));routeLayers=[];ma
 function loadGpx(){let files=[...$('gpx').files];$('gpxOut').textContent='Wybrano '+files.length+' plików. Duże archiwa GPX najlepiej wcześniej uprościć.'}
 $('addVia').onclick=()=>addVia();$('plan').onclick=makePlan;$('openMapy').onclick=()=>{if(planPts.length) window.open(mapyUrl(planPts),'_blank'); else makePlan().then(()=>planPts.length&&window.open(mapyUrl(planPts),'_blank'));};$('newPlan').onclick=()=>{$('start').value='';$('end').value='';$('vias').innerHTML='';addVia();$('planOut').innerHTML='';$('attractions').innerHTML='';clearMap();};$('btnAll').onclick=drawAll;$('btnClear').onclick=clearMap;$('btnLoc').onclick=()=>navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>map.setView([p.coords.latitude,p.coords.longitude],14));$('loadGpx').onclick=loadGpx;
 $('known').innerHTML=known.map(k=>`<span class="pill">${esc(k.label)}</span>`).join(' ');
-addVia('Jeżów'); loadRoutes();
+addVia('Jeżów'); enableLongPressAddVia(); loadRoutes();
 </script></body></html>
