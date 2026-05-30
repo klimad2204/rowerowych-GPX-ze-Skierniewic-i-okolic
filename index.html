@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-store">
-<title>Rowerowe Trasy Adama V10.2</title>
+<title>Rowerowe Trasy Adama V10.3</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--bg:#eef7f1;--card:#ffffff;--ink:#123024;--muted:#5a6f64;--green:#176b4c;--green2:#23966b;--red:#cc3d3d;--blue:#2563eb;--line:#d7e8de}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}#map{position:sticky;top:0;height:42vh;z-index:1;border-bottom:3px solid var(--green)}main{max-width:980px;margin:0 auto;padding:12px 12px 40px}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 6px 18px #0001}h1{font-size:24px;margin:4px 0 8px}h2{font-size:19px;margin:4px 0 10px}.version{display:inline-block;background:#e6f5eb;color:#0b5d3e;border:1px solid #b9e2c9;border-radius:999px;padding:5px 9px;font-weight:700}.status{background:#14251d;color:#fff;border-radius:14px;padding:10px;margin:10px 0}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tabs button,.grid button,button,.btn{border:0;border-radius:13px;padding:11px 10px;background:var(--green);color:white;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}.tabs button.active{background:#0e3f2d}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.small{font-size:13px}.secondary{background:#375a7f!important}.warn{background:#9f412f!important}.ghost{background:#eef4f0!important;color:#153b2b!important;border:1px solid #cdded4!important}input,select,textarea{width:100%;padding:11px;border:1px solid #c8d8ce;border-radius:12px;font:inherit;background:#fff}label{display:block;margin:8px 0;color:#243b31;font-weight:650}.tab{display:none}.tab.active{display:block}.route,.attr,.statrow{border:1px solid var(--line);border-radius:14px;padding:11px;margin:8px 0;background:#fbfefd}.route h3,.attr h3{margin:0 0 6px;font-size:16px}.meta{color:var(--muted);font-size:13px}.pill{display:inline-block;background:#edf7f1;border:1px solid #cfe4d8;color:#145237;border-radius:99px;padding:3px 7px;margin:2px;font-size:12px}.bar{height:8px;background:#e2ece6;border-radius:9px;overflow:hidden}.bar>span{display:block;height:8px;background:var(--green2)}.hidden{display:none!important}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.leaflet-popup-content{font:14px system-ui}.danger{color:#9f2626}.ok{color:#0f6b43}.mono{font-family:ui-monospace,Consolas,monospace}.note{font-size:13px;color:#51665b;line-height:1.45}.listbox{max-height:520px;overflow:auto}.kbd{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:1px 5px}.footer{font-size:12px;color:#607369;text-align:center;margin:20px 0}@media(max-width:700px){#map{height:38vh}.tabs{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}main{padding:9px}.card,.panel{border-radius:14px}}
@@ -30,6 +30,7 @@
 <section id="planner" class="tab active panel">
 <h2>🧭 Zaplanuj trasę</h2>
 <label>Start <input id="start" value="Bogusławice 107B" placeholder="np. Wolbórz albo 51.50,19.83"></label>
+<div class="grid"><button id="startMe" class="secondary" type="button">📍 Start = moja lokalizacja</button><button id="centerMe" class="ghost" type="button">Pokaż mnie na mapie</button></div>
 <div id="viaBox"></div>
 <button id="addVia" class="secondary">+ Dodaj punkt PRZEZ</button>
 <label>Meta <input id="end" value="Skierniewice, Konarskiego 1"></label>
@@ -42,7 +43,7 @@
 </div>
 <div id="planReport" class="panel hidden"></div>
 <div id="planAttractions" class="panel hidden"></div>
-<p class="note">Przytrzymaj palcem punkt na mapie około 1 sekundę — zostanie dodany jako punkt <b>PRZEZ</b>. Link do Mapy.com używa trybu <b>bike_road</b>.</p>
+<p class="note">Opcja „Start = moja lokalizacja” wpisuje GPS telefonu jako start. Przytrzymaj palcem punkt na mapie około 1 sekundę — zostanie dodany jako punkt <b>PRZEZ</b>. Link do Mapy.com używa trybu <b>bike_road</b>.</p>
 </section>
 <section id="routes" class="tab panel">
 <h2>📋 Lista tras GPX</h2>
@@ -177,10 +178,46 @@ function mapyRoute(coords){if(!coords||coords.length<2)return '#'; let u=new URL
 function planGpx(){if(currentPlanCoords.length<2){alert('Najpierw utwórz szkic.');return} let trk=currentPlanCoords.map(c=>`<trkpt lat="${c[0]}" lon="${c[1]}"></trkpt>`).join('\n'); download('plan-v10.gpx',`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Rowerowe Trasy Adama"><trk><name>Plan V10</name><trkseg>${trk}</trkseg></trk></gpx>`)}
 function download(name,text){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function parseGpx(txt,name){let doc=new DOMParser().parseFromString(txt,'application/xml');let pts=[...doc.querySelectorAll('trkpt')].map(p=>[+p.getAttribute('lat'),+p.getAttribute('lon')]).filter(c=>isFinite(c[0])&&isFinite(c[1])); if(pts.length<2)throw new Error('Brak punktów trkpt'); let step=Math.max(1,Math.ceil(pts.length/900)); let simp=pts.filter((_,i)=>i%step===0); if(JSON.stringify(simp.at(-1))!==JSON.stringify(pts.at(-1)))simp.push(pts.at(-1)); return {id:'imp'+Date.now()+Math.random(),name:name.replace(/\.gpx$/i,''),date:new Date().toISOString().slice(0,10),month:new Date().toISOString().slice(0,7),distanceKm:+lineKm(pts).toFixed(1),points:pts.length,coords:simp}}
+
+function getMyPosition(){
+  return new Promise((resolve,reject)=>{
+    if(!navigator.geolocation) return reject(new Error('Telefon/przeglądarka nie udostępnia lokalizacji.'));
+    navigator.geolocation.getCurrentPosition(
+      p=>resolve({lat:p.coords.latitude, lon:p.coords.longitude, acc:p.coords.accuracy}),
+      e=>reject(new Error(e.message || 'Nie udało się pobrać lokalizacji. Włącz GPS i zgodę dla przeglądarki.')),
+      {enableHighAccuracy:true, timeout:15000, maximumAge:30000}
+    );
+  });
+}
+async function setStartMyLocation(){
+  try{
+    msg('Pobieram Twoją lokalizację GPS...');
+    const p=await getMyPosition();
+    const val=`${p.lat.toFixed(6)},${p.lon.toFixed(6)}`;
+    $('start').value=val;
+    markersLayer.clearLayers();
+    L.marker([p.lat,p.lon]).addTo(markersLayer).bindPopup(`START: moja lokalizacja<br>${val}<br>Dokładność ok. ${Math.round(p.acc||0)} m`).openPopup();
+    map.setView([p.lat,p.lon],14);
+    msg('Ustawiono start jako Twoją lokalizację: '+val);
+  }catch(e){
+    msg(e.message);
+    alert(e.message+'\n\nJeśli nie działa: Chrome → ustawienia witryny → lokalizacja → zezwól.');
+  }
+}
+async function centerMyLocation(){
+  try{
+    msg('Szukam Twojej lokalizacji...');
+    const p=await getMyPosition();
+    L.marker([p.lat,p.lon]).addTo(markersLayer).bindPopup(`Moja lokalizacja<br>${p.lat.toFixed(6)},${p.lon.toFixed(6)}`).openPopup();
+    map.setView([p.lat,p.lon],14);
+    msg('Pokazano Twoją lokalizację na mapie.');
+  }catch(e){msg(e.message);alert(e.message)}
+}
+
 async function importGpx(){let files=[...$('gpxInput').files]; if(!files.length){alert('Wybierz GPX.');return}let added=0;for(const f of files){try{let r=parseGpx(await f.text(),f.name); if(routes.some(x=>norm(x.name)===norm(r.name))){alert('Pominięto duplikat nazwy: '+r.name);continue} imported.push(r);routes.push(r);added++}catch(e){alert(f.name+': '+e.message)}}saveImported();renderRoutes();renderStats();$('toolsOut').innerHTML=`Dodano ${added} tras.`;msg('Import GPX zakończony.')}
 function backup(){download('kopie_importowanych_tras.json',JSON.stringify(imported,null,2))}
 function switchTab(id){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id)); setTimeout(()=>map.invalidateSize(),200)}
-function bind(){document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$('showAll').onclick=showAll;$('clearMap').onclick=clearMap;$('search').oninput=renderRoutes;$('distFilter').onchange=renderRoutes;$('addVia').onclick=()=>addVia();$('makePlan').onclick=makePlan;$('clearPlan').onclick=()=>{$('start').value='';$('end').value='';$('viaBox').innerHTML='';planLayer.clearLayers();markersLayer.clearLayers();attrLayer.clearLayers();$('planReport').classList.add('hidden');$('planAttractions').classList.add('hidden');msg('Plan wyczyszczony.')};$('downloadPlan').onclick=planGpx;$('importGpx').onclick=importGpx;$('backup').onclick=backup;}
+function bind(){document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$('showAll').onclick=showAll;$('clearMap').onclick=clearMap;$('search').oninput=renderRoutes;$('distFilter').onchange=renderRoutes;$('addVia').onclick=()=>addVia();$('startMe').onclick=setStartMyLocation;$('centerMe').onclick=centerMyLocation;$('makePlan').onclick=makePlan;$('clearPlan').onclick=()=>{$('start').value='';$('end').value='';$('viaBox').innerHTML='';planLayer.clearLayers();markersLayer.clearLayers();attrLayer.clearLayers();$('planReport').classList.add('hidden');$('planAttractions').classList.add('hidden');msg('Plan wyczyszczony.')};$('downloadPlan').onclick=planGpx;$('importGpx').onclick=importGpx;$('backup').onclick=backup;}
 initMap();bind();loadRoutes();
 </script>
 </body>
